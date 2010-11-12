@@ -1,0 +1,7 @@
+{
+	"name": "Web History Visualizer",
+	"version": "0.1",
+	"permissions": [
+		"history"
+	]
+}
