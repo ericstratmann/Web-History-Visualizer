@@ -1,7 +1,10 @@
 {
-	"name": "Web History Visualizer",
-	"version": "0.1",
-	"permissions": [
-		"history"
-	]
+    "name": "Web History Visualizer",
+    "version": "0.1",
+    "permissions": [
+        "history"
+    ],
+    "chrome_url_overrides": {
+        "history": "history.html"
+    }
 }
