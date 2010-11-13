@@ -1,12 +1,26 @@
 $(init);
 
+function init() {
+    addClickHandlers();
+    showHistory();
+}
+
+
 function addClickHandlers() {
     $("#showHistory").click(showHistory);
     $("#pagesPerDay").click(pagesPerDay);
 }
 
 function showHistory() {
-    $("#results").html("History!");
+    $("#results").html("");
+    getHistory(function(historyItems) {
+        for (var i in historyItems) {
+            var url = historyItems[i].url;
+            var title = historyItems[i].title;
+            var html = "<a href='" + url + "'>" + title + "</a><br/>";
+            $("#results").append(html);
+        }
+    });
     return false;
 }
 
@@ -15,7 +29,10 @@ function pagesPerDay() {
     return false;
 }
 
-function init() {
-    addClickHandlers();
-    $("#results").html("History goes here");
+function getHistory(fn) {
+    var query = {
+        text: "",
+        maxResults: 50
+    };
+    chrome.history.search(query, fn);
 }
