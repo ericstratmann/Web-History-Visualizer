@@ -1,5 +1,6 @@
 // Various utility methods
 
+// Calls `callback' with an array of all history items
 function getHistory(callback) {
     var query = {
         text: "",
@@ -8,6 +9,8 @@ function getHistory(callback) {
     chrome.history.search(query, callback);
 }
 
+// Returns the `num' most visited domains from `visits'.
+// Returns: [{domain: "google.com", hits: 5}, ...]
 function getMostVisitedDomains(visits, num) {
     var hits = {};
     for (var i in visits) {
@@ -32,6 +35,8 @@ function getMostVisitedDomains(visits, num) {
     return arr.slice(-num);
 }
 
+// Returns a hash of the form:
+// sorted[year][month][day] = [visit, visit2, ...]
 function sortVisitsByDay(visits) {
     var sorted = {};
     for (var i in visits) {
@@ -48,6 +53,7 @@ function sortVisitsByDay(visits) {
     return sorted;
 }
 
+// Calls `callback' with an array of all visits to all URLs
 function allVisits(callback) {
     var visits = [];
     getHistory(function(historyItems) {

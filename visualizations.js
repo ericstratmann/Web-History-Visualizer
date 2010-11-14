@@ -2,6 +2,7 @@
 // page. Each function should be named the same as the id of the HTML element
 // in history.html that links to the visualization, e.g. showHistory
 
+// Shows a list of all visited websites
 function showHistory() {
     allVisits(function(historyItems) {
         for (var i in historyItems) {
@@ -13,6 +14,7 @@ function showHistory() {
     });
 }
 
+// Displays the number of pages visited per day
 function pagesPerDay() {
     allVisits(function(visits) {
         var sorted = sortVisitsByDay(visits);
@@ -30,6 +32,7 @@ function pagesPerDay() {
     });
 }
 
+// Displays the most visited domains
 function mostVisited() {
     allVisits(function(visits) {
         var sites = getMostVisitedDomains(visits, 8); 
