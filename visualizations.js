@@ -2,7 +2,6 @@
 // page. Each function should be named the same as the id of the HTML element
 // in history.html that links to the visualization, e.g. showHistory
 function showHistory() {
-    $("#results").html("");
     allVisits(function(historyItems) {
         for (var i in historyItems) {
             var url = historyItems[i].url;
@@ -11,11 +10,9 @@ function showHistory() {
             $("#results").append(html);
         }
     });
-    return false;
 }
 
 function pagesPerDay() {
-    $("#results").html("");
     allVisits(function(visits) {
         var sorted = sortVisitsByDay(visits);
         for (var year in sorted) {
@@ -30,5 +27,4 @@ function pagesPerDay() {
             }
         }
     });
-    return false;
 }

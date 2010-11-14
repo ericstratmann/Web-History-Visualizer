@@ -7,7 +7,12 @@ function init() {
 
 
 function addClickHandlers() {
-    $("#showHistory").click(showHistory);
-    $("#pagesPerDay").click(pagesPerDay);
+    $("#links > a").each(function(i, link) {
+        $(link).click(function() {
+            $("#results").html("");
+            window[link.id]();
+            return false;
+        });
+    });
 }
 
