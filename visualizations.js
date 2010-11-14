@@ -1,6 +1,7 @@
 // Each function in this file corresponds to one visualization in the history
 // page. Each function should be named the same as the id of the HTML element
 // in history.html that links to the visualization, e.g. showHistory
+
 function showHistory() {
     allVisits(function(historyItems) {
         for (var i in historyItems) {
@@ -25,6 +26,15 @@ function pagesPerDay() {
                     $("#results").append(date + ": " + num + "<br/>");
                 }
             }
+        }
+    });
+}
+
+function mostVisited() {
+    allVisits(function(visits) {
+        var sites = getMostVisitedDomains(visits, 8); 
+        for (var i in sites) {
+            $("#results").append(sites[i].domain + ": " + sites[i].hits + "<br/>");
         }
     });
 }

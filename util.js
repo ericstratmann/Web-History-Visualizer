@@ -8,6 +8,30 @@ function getHistory(callback) {
     chrome.history.search(query, callback);
 }
 
+function getMostVisitedDomains(visits, num) {
+    var hits = {};
+    for (var i in visits) {
+        var domain = parseUri(visits[i].url).host;
+        hits[domain] = hits[domain] || 0;
+        hits[domain]++;
+    }
+
+    var arr = [];
+    for (var i in hits) {
+        arr.push({domain: i, hits: hits[i]}); 
+    }
+    arr.sort(function(a, b) {
+        if (a.hits < b.hits) {
+            return -1;
+        } else if (a.hits > b.hits) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+    return arr.slice(-num);
+}
+
 function sortVisitsByDay(visits) {
     var sorted = {};
     for (var i in visits) {
