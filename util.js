@@ -23,17 +23,24 @@ function getMostVisitedDomains(visits, num) {
     for (var i in hits) {
         arr.push({domain: i, hits: hits[i]}); 
     }
-    arr.sort(function(a, b) {
-        if (a.hits < b.hits) {
-            return -1;
-        } else if (a.hits > b.hits) {
-            return 1;
-        } else {
-            return 0;
-        }
-    });
+
+    sortBy(arr, "hits");
     return arr.slice(-num);
 }
+
+// Sorts an array of objects based on the `field' property of each object
+// e.g. sortBy([{a:2}, {a:1}], "a") => [{a:1}, {a:2}]
+function sortBy(arr, field) {
+    arr.sort(function(a, b) {
+        if (a[field] < b[field]) {
+            return -1;
+        } else if (a[field] > b[field]) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
 
 // Returns a hash of the form:
 // sorted[year][month][day] = [visit, visit2, ...]
