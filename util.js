@@ -1,31 +1,32 @@
 // Various utility methods
 
+var _visits = []
+
+allVisits(function(all) {
+    _visits = all;
+});
+
+function getTimeScaleFunc(scale) {
+    if (scale === TimeScale.HOUR) {
+       return "getHours";
+    } else if (scale === TimeScale.DAY) {
+        return "getDate";
+    } else if (scale === TimeScale.MONTH) {
+        return "getMonth"; 
+    } else if (scale === TimeScale.YEAR) {
+        return "getFullYear";
+    }
+    throw "Invalid TimeScale";
+}
+
+
 // Calls `callback' with an array of all history items
 function getHistory(callback) {
     var query = {
         text: "",
-        maxResults: 10000
+        maxResults: 0
     };
     chrome.history.search(query, callback);
-}
-
-// Returns the `num' most visited domains from `visits'.
-// Returns: [{domain: "google.com", hits: 5}, ...]
-function getMostVisitedDomains(visits, num) {
-    var hits = {};
-    for (var i in visits) {
-        var domain = parseUri(visits[i].url).host;
-        hits[domain] = hits[domain] || 0;
-        hits[domain]++;
-    }
-
-    var arr = [];
-    for (var i in hits) {
-        arr.push({domain: i, hits: hits[i]}); 
-    }
-
-    sortBy(arr, "hits");
-    return arr.slice(-num);
 }
 
 // Sorts an array of objects based on the `field' property of each object
@@ -41,25 +42,6 @@ function sortBy(arr, field) {
     });
 }
 
-
-// Returns a hash of the form:
-// sorted[year][month][day] = [visit, visit2, ...]
-function sortVisitsByDay(visits) {
-    var sorted = {};
-    for (var i in visits) {
-        var visit = visits[i];
-        var date = new Date(visit.time);
-        var year = date.getFullYear();
-        var month = date.getMonth();
-        var day = date.getDate();
-        sorted[year] = sorted[year] || {};
-        sorted[year][month] = sorted[year][month] || {};
-        sorted[year][month][day] = sorted[year][month][day] || [];
-        sorted[year][month][day].push(visit);
-    }
-    return sorted;
-}
-
 // Calls `callback' with an array of all visits to all URLs
 function allVisits(callback) {
     var visits = [];
@@ -71,9 +53,11 @@ function allVisits(callback) {
                 for (var j in visitItems) {
                     var visit = visitItems[j];
                     visits.push({
+                        id: visit.id,
                         url: history.url,
                         title: history.title,
                         time: visit.visitTime,
+                        refId: visit.referringVisitId,
                         transition: visit.transition
                     });
                 }

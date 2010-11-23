@@ -3,7 +3,7 @@ $(init);
 // Automatically called when the DOM is loaded
 function init() {
     addClickHandlers();
-    showHistory();
+    setTimeout(showHistory, 100);
 }
 
 
@@ -19,4 +19,3 @@ function addClickHandlers() {
         });
     });
 }
-

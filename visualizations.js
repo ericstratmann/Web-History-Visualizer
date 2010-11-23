@@ -4,40 +4,32 @@
 
 // Shows a list of all visited websites
 function showHistory() {
-    allVisits(function(historyItems) {
-        for (var i in historyItems) {
-            var url = historyItems[i].url;
-            var title = historyItems[i].title;
-            var html = "<a href='" + url + "'>" + title + "</a><br/>";
-            $("#results").append(html);
-        }
-    });
+    var filter = {minTime: new Date().getTime() - 60 * 60 * 24 * 1000}
+    var visits = getVisits(filter);
+    sortBy(visits, "time");
+    visits.reverse()
+    for (var i in visits) {
+        var url = visits[i].url;
+        var title = visits[i].title || "No title";
+        var html = "<a href='" + url + "'>" + title + "</a><br/>";
+        $("#results").append(html);
+    }
 }
 
 // Displays the number of pages visited per day
 function pagesPerDay() {
-    allVisits(function(visits) {
-        var sorted = sortVisitsByDay(visits);
-        for (var year in sorted) {
-            var months = sorted[year];
-            for (var month in months) {
-                var days = sorted[year][month];
-                for (var day in days) {
-                    var date = year + "-" + month + "-" + day;
-                    var num = sorted[year][month][day].length;
-                    $("#results").append(date + ": " + num + "<br/>");
-                }
-            }
-        }
-    });
+    var numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
+    for (var time in numVisits) {
+        $("#results").append(time + ": " + numVisits[time] + "<br/>");
+    }
 }
 
 // Displays the most visited domains
 function mostVisited() {
-    allVisits(function(visits) {
-        var sites = getMostVisitedDomains(visits, 8); 
-        for (var i in sites) {
-            $("#results").append(sites[i].domain + ": " + sites[i].hits + "<br/>");
-        }
-    });
+    var numDomainsToShow = 8;
+    var numVisits = numVisitsByURL(getVisits());
+    var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
+    for (var i in sorted) {
+        $("#results").append(sorted[i].key + ": " + sorted[i].val + "<br/>");
+    }
 }
