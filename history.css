@@ -1,3 +1,42 @@
+body {
+  font-family: "Lucida Grande";
+}
+
 a {
-    color: blue
+  color: #1166dd;
+  text-decoration: none;
+}
+
+#container {
+  margin: auto;
+  width: 960px;
+}
+
+.header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.nav {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #aaa;
+  border-top: 1px solid #aaa;
+  padding: 5px;
+  padding-left: 0px;
+}
+
+.nav_link {
+  margin-right: 40px;
+  padding: 5px;
+}
+
+.nav_link:hover {
+  background-color: #1144ff;
+  color: #fff;
+}
+
+.chart_title {
+  font-weight:bold;
+  margin-bottom: 5px;
 }

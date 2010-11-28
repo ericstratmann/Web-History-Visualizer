@@ -4,6 +4,7 @@
 
 // Shows a list of all visited websites
 function showHistory() {
+    //alert('awef');
     var filter = {minTime: new Date().getTime() - 60 * 60 * 24 * 1000}
     var visits = getVisits(filter);
     sortBy(visits, "time");
@@ -22,6 +23,8 @@ function pagesPerDay() {
     for (var time in numVisits) {
         $("#results").append(time + ": " + numVisits[time] + "<br/>");
     }
+
+
 }
 
 // Displays the most visited domains

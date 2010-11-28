@@ -1,22 +1,232 @@
 <html>
-    <head>
-        <script src="lib/jquery.js"></script>
-        <script src="lib/protovis.js"></script>
-        <script src="lib/parseuri.js"></script>
-        <script src="history.js"></script>
-        <script src="visualizations.js"></script>
-        <script src="util.js"></script>
-        <script src="api.js"></script>
-        <link rel="stylesheet" type="text/css" href="history.css" />
-    </head>
-    <body>
-        <div id="links">
-            <a href="#" id="showHistory">Show History</a>
-            <a href="#" id="pagesPerDay">Number of Pages Per Day</a>
-            <a href="#" id="mostVisited">Most visited websites</a>
-        </div>
-        <hr/>
-        <div id="results">
-        </div>
-    </body>
+  <head>
+    <script src="lib/jquery.js"></script>
+    <script src="lib/protovis.js"></script>
+    <script src="lib/parseuri.js"></script>
+    <script src="history.js"></script>
+    <script src="visualizations.js"></script>
+    <script src="util.js"></script>
+    <script src="api.js"></script>
+    <link rel="stylesheet" type="text/css" href="history.css" />
+    <style type="text/css">
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div class="header">
+        Browser History
+      </div>
+      <div class="nav" id="nav">
+        <a href="javascript:void(0)" class="nav_link clickable_link" id="showHistory">Show History</a>
+        <a href="javascript:void(0)" class="nav_link clickable_link" id="pagesPerDay">Number of Pages Per Day</a>
+        <a href="javascript:void(0)" class="nav_link clickable_link" id="mostVisited">Most visited websites</a>
+        <a href="javascript:void(0)" class="nav_link" id="tempLink">TEMP</a>
+      </div>
+      <div class="chart_title">
+        Number of Visits per Day
+      </div>
+      <div class="chart_links">
+        change to: <a href="javascript:void(0)" id="hourScale">hour</a> |
+        <a href="javascript:void(0)" id="dayScale">day</a> |
+        <a href="javascript:void(0)" id="monthScale">month</a> |
+        <a href="javascript:void(0)" id="yearScale">year</a>
+      </div>
+      <script type="text/javascript+protovis">
+      
+      function awesome() {
+        
+        var numDomainsToShow = 8;
+        var numVisits = numVisitsByURL(getVisits());
+        var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
+        /*
+        for (var i in sorted) {
+          $("#results").append(sorted[i].key + ": " + sorted[i].val + "<br/>");
+        }
+        */
+        
+        
+        var td_data = pv.range(numDomainsToShow).map(function(d) { return sorted[d].val; });
+        /* Sizing and scales. */
+        w_bar = 400;
+        h_bar = 250;
+        //x_bar = pv.Scale.linear(0, 1500).range(0, w_bar);
+        x_bar = pv.Scale.linear(td_data, function(d) d).range(0, w_bar);
+        y_bar = pv.Scale.ordinal(pv.range(numDomainsToShow)).splitBanded(0, h_bar, 4/5);
+        
+        /* The root panel. */
+        topDomains = new pv.Panel()
+            .width(w_bar)
+            .height(h_bar)
+            .bottom(20)
+            .left(150)
+            .right(10)
+            .top(5);
+        
+        /* The bars. */
+        var bar = topDomains.add(pv.Bar)
+            .data(td_data)
+            .top(function() y_bar(this.index))
+            .height(y_bar.range().band)
+            .left(0)
+            .width(x_bar);
+        
+        /* The value label. */
+        bar.anchor("left").add(pv.Label)
+            .textStyle("black")
+            .text(function(d) d.toFixed(1));
+        
+        /* The variable label. */
+        bar.anchor("left").add(pv.Label)
+            .textMargin(5)
+            .textAlign("right")
+            .text(function() sorted[this.index].key);
+        
+        /* X-axis ticks. */
+        topDomains.add(pv.Rule)
+            .data(x_bar.ticks(5))
+            .left(x_bar)
+            .strokeStyle(function(d) d ? "rgba(255,255,255,.3)" : "#000")
+          .add(pv.Rule)
+            .bottom(0)
+            .height(5)
+            .strokeStyle("#000")
+          .anchor("bottom").add(pv.Label)
+            .text(x_bar.tickFormat);
+        
+        topDomains.render();
+      }
+      
+      
+      
+      
+      
+      
+        function pokemon() {
+          numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
+          data = pv.range(1, 32, 1).map(function(x) {
+            var i = numVisits[x];
+            if(i === undefined) {
+              i = 0;
+            }
+            return {x: x, y: i};
+          });
+          /* Sizing and scales. */
+          w = 400;
+          h = 200;
+          x = pv.Scale.linear(data, function(d) d.x).range(0, w);
+          y = pv.Scale.linear(data, function(d) d.y).range(0, h);
+          
+          /* The root panel. */
+          vis = new pv.Panel()
+            .width(w)
+            .height(h)
+            .bottom(20)
+            .left(40)
+            .right(10)
+            .top(5);
+          
+          /* Y-axis and ticks. */
+          vis.add(pv.Rule)
+            .data(y.ticks(10))
+            .bottom(y)
+            .strokeStyle(function(d) d ? "#ccc" : "#000")
+            .anchor("left").add(pv.Label)
+            .text(y.tickFormat);
+          
+          /* X-axis and ticks. */
+          /*
+          xRule = vis.add(pv.Rule);
+          awef = xRule.data(x.ticks(10))
+            .visible(function(d) d)
+            .left(x)
+            .bottom(-5)
+            .height(5)
+            .anchor("bottom");
+          xText = awef.add(pv.Label).text(x.tickFormat);
+          */
+          
+          vis.add(pv.Rule)
+            .data(x.ticks(10))
+            //.visible(function(d) d > 5)
+            //.strokeStyle("#f00")
+            .left(x)
+            .bottom(-5)
+            .height(5)
+            .anchor("bottom").add(pv.Label)
+            .text(x.tickFormat);
+          
+          /* The area with top line. */
+          areaData = vis.add(pv.Area);
+            areaData.data(data)
+            .bottom(1)
+            .left(function(d) x(d.x))
+            .height(function(d) y(d.y))
+            .fillStyle("rgb(121,173,210)")
+            .anchor("top");
+          
+          vis.render();
+          
+          
+        }
+        
+        setTimeout("pokemon();", 300);
+        setTimeout("awesome();", 400);
+        
+        function updateData(begin, end) {
+          data = pv.range(begin, end, 1).map(function(x) {
+            var i = numVisits[x];
+            if(i === undefined) {
+              i = 0;
+            }
+            return {x: x, y: i};
+          });
+          
+          x = pv.Scale.linear(data, function(d) d.x).range(0, w);
+          y = pv.Scale.linear(data, function(d) d.y).range(0, h);
+          //xRule.data(x.ticks());
+          //awef.data(x.ticks());
+          //xText.text(x.tickFormat);
+          //awef.add(pv.Label).text(x.tickFormat);
+          areaData.data(data);
+          areaData.render();
+        }
+        
+        $('#hourScale').click(function() {
+          numVisits = numVisitsByTime(getVisits(), TimeScale.HOUR);
+          updateData(0, 24);
+          $('#chart_title').html('Number of Visits per Hour');
+        });
+        $('#dayScale').click(function() {
+          numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
+          updateData(1, 32);
+          $('#chart_title').html('Number of Visits per Day');
+        });
+        $('#monthScale').click(function() {
+          numVisits = numVisitsByTime(getVisits(), TimeScale.MONTH);
+          updateData(0, 12);
+          $('#chart_title').html('Number of Visits per Month');
+        });
+        $('#yearScale').click(function() {
+          numVisits = numVisitsByTime(getVisits(), TimeScale.YEAR);
+          updateData(2007, 2012);
+          $('#chart_title').html('Number of Visits per Year');
+        });
+      </script>
+      <div id="results">
+      </div>
+    </div>
+    <script type="text/javascript">
+      function initFunc() {
+        $('span').attr('class', 'protovisGraph');
+        $('span').first().attr('id', 'graph_time');
+        $('span').last().attr('id', 'graph_topDomains');
+        //$('.protovisGraph').appendTo('#container');
+        $('#graph_time').appendTo('#container');
+        $('#container').append('<p>(Todo: Axes must change when data changes)<\/p>');
+        $('#container').append('<div class="chart_title" style="margin-top:20px">Top Domains<\/div>');
+        $('#graph_topDomains').appendTo('#container');
+      }
+      setTimeout("initFunc();", 500);
+    </script>
+  </body>
 </html>
