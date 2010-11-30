@@ -35,7 +35,7 @@
       
       function awesome() {
         
-        var numDomainsToShow = 8;
+        var numDomainsToShow = 35;
         var numVisits = numVisitsByURL(getVisits());
         var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
         /*
@@ -45,10 +45,15 @@
         */
         
         
-        var td_data = pv.range(numDomainsToShow).map(function(d) { return sorted[d].val; });
+        var td_data = pv.range(numDomainsToShow).map(function(d) { 
+          if(sorted[d] === undefined) {
+            return 0;
+          }
+          return sorted[d].val;
+        });
         /* Sizing and scales. */
-        w_bar = 400;
-        h_bar = 250;
+        w_bar = 700;
+        h_bar = 650;
         //x_bar = pv.Scale.linear(0, 1500).range(0, w_bar);
         x_bar = pv.Scale.linear(td_data, function(d) d).range(0, w_bar);
         y_bar = pv.Scale.ordinal(pv.range(numDomainsToShow)).splitBanded(0, h_bar, 4/5);
