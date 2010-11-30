@@ -33,7 +33,7 @@
       </div>
       <script type="text/javascript+protovis">
       
-      function awesome() {
+      function renderTopDomains() {
         var numDomainsToShow = 8;
         var numVisits = numVisitsByURL(getVisits());
         var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
@@ -105,7 +105,7 @@
       
       
       
-        function pokemon() {
+        function renderNumVisitsGraph() {
           numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
           data = pv.range(1, 32, 1).map(function(x) {
             var i = numVisits[x];
@@ -173,8 +173,8 @@
           
         }
         
-        visitsReady(awesome);
-        visitsReady(pokemon);
+        visitsReady(renderNumVisitsGraph);
+        visitsReady(renderTopDomains);
         
         function updateData(begin, end) {
           data = pv.range(begin, end, 1).map(function(x) {
