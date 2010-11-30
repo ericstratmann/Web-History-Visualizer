@@ -34,7 +34,6 @@
       <script type="text/javascript+protovis">
       
       function awesome() {
-        
         var numDomainsToShow = 8;
         var numVisits = numVisitsByURL(getVisits());
         var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
@@ -169,8 +168,8 @@
           
         }
         
-        setTimeout("pokemon();", 300);
-        setTimeout("awesome();", 400);
+        visitsReady(awesome);
+        visitsReady(pokemon);
         
         function updateData(begin, end) {
           data = pv.range(begin, end, 1).map(function(x) {
