@@ -4,6 +4,9 @@ var _visits = []
 
 allVisits(function(all) {
     _visits = all;
+    for (var i in visitCallbacks) {
+        visitCallbacks[i]();
+    }
 });
 
 function getTimeScaleFunc(scale) {
@@ -23,8 +26,8 @@ function getTimeScaleFunc(scale) {
 // Calls `callback' with an array of all history items
 function getHistory(callback) {
     var query = {
-        text: "",
-        maxResults: 0
+        text: '',
+        maxResults: 100000
     };
     chrome.history.search(query, callback);
 }

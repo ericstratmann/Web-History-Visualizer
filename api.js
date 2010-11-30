@@ -15,6 +15,13 @@ var TimeScale = {
     YEAR: 4   // 1970 - 
 }
 
+// Invokes `callback' when visit data is ready
+var visitCallbacks = [];
+function visitsReady(callback) {
+    visitCallbacks.push(callback);
+}
+
+
 // Returns all visits that match the optional `filter'.
 // A filter object can have any of the following properties:
 //   maxTime: int
