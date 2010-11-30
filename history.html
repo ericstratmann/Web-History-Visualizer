@@ -100,11 +100,6 @@
         topDomains.render();
       }
       
-      
-      
-      
-      
-      
         function renderNumVisitsGraph() {
           numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
           data = pv.range(1, 32, 1).map(function(x) {
@@ -169,14 +164,73 @@
             .anchor("top");
           
           vis.render();
+        }
+        
+        //renders the graph with a focus on a particular domain
+        function renderFocusGraph() {
+          //var domainName = "www.reddit.com"; //TODO: change this dynamically based on user input
+          var domainFilter = {"domain": "www.reddit.com"};
+        
+          numVisitsFocus = numVisitsByTime(getVisits(domainFilter), TimeScale.HOUR);
+          focusData = pv.range(0, 24, 1).map(function(x) {
+            var i = numVisitsFocus[x];
+            if(i === undefined) {
+              i = 0;
+            }
+            return {x: x, y: i};
+          });
           
+          /* Sizing and scales. */
+          w_foc = 400;
+          h_foc = 200;
+          x_foc = pv.Scale.linear(focusData, function(d) d.x).range(0, w_foc);
+          y_foc = pv.Scale.linear(focusData, function(d) d.y).range(0, h_foc);
           
+          /* The root panel. */
+          focusVis = new pv.Panel()
+            .width(w_foc)
+            .height(h_foc)
+            .bottom(20)
+            .left(40)
+            .right(10)
+            .top(5);
+          
+          /* Y-axis and ticks. */
+          focusVis.add(pv.Rule)
+            .data(y_foc.ticks(10))
+            .bottom(y_foc)
+            .strokeStyle(function(d) d ? "#ccc" : "#000")
+            .anchor("left").add(pv.Label)
+            .text(y_foc.tickFormat);
+          
+          /* X-axis and ticks. */
+          focusVis.add(pv.Rule)
+            .data(x_foc.ticks(10))
+            //.visible(function(d) d > 5)
+            //.strokeStyle("#ccc")
+            .left(x_foc)
+            .bottom(-5)
+            .height(5)
+            .anchor("bottom").add(pv.Label)
+            .text(x_foc.tickFormat);
+          
+          /* The area with top line. */
+          focusVis.add(pv.Area)
+            .data(focusData)
+            .bottom(1)
+            .left(function(d) x_foc(d.x))
+            .height(function(d) y_foc(d.y))
+            .fillStyle("#3a5")
+            .anchor("top");
+          
+          focusVis.render();
         }
         
         visitsReady(renderNumVisitsGraph);
         visitsReady(renderTopDomains);
+        visitsReady(renderFocusGraph);
         
-        function updateData(begin, end) {
+        function updateNumVisitsData(begin, end) {
           data = pv.range(begin, end, 1).map(function(x) {
             var i = numVisits[x];
             if(i === undefined) {
@@ -187,6 +241,7 @@
           
           x = pv.Scale.linear(data, function(d) d.x).range(0, w);
           y = pv.Scale.linear(data, function(d) d.y).range(0, h);
+          //TODO: have the axes change when data changes
           //xRule.data(x.ticks());
           //awef.data(x.ticks());
           //xText.text(x.tickFormat);
@@ -197,22 +252,22 @@
         
         $('#hourScale').click(function() {
           numVisits = numVisitsByTime(getVisits(), TimeScale.HOUR);
-          updateData(0, 24);
+          updateNumVisitsData(0, 24);
           $('#chart_title').html('Number of Visits per Hour');
         });
         $('#dayScale').click(function() {
           numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
-          updateData(1, 32);
+          updateNumVisitsData(1, 32);
           $('#chart_title').html('Number of Visits per Day');
         });
         $('#monthScale').click(function() {
           numVisits = numVisitsByTime(getVisits(), TimeScale.MONTH);
-          updateData(0, 12);
+          updateNumVisitsData(0, 12);
           $('#chart_title').html('Number of Visits per Month');
         });
         $('#yearScale').click(function() {
           numVisits = numVisitsByTime(getVisits(), TimeScale.YEAR);
-          updateData(2007, 2012);
+          updateNumVisitsData(2007, 2012);
           $('#chart_title').html('Number of Visits per Year');
         });
       </script>
@@ -222,11 +277,22 @@
     <script type="text/javascript">
       function initFunc() {
         $('span').attr('class', 'protovisGraph');
-        $('span').first().attr('id', 'graph_time');
-        $('span').last().attr('id', 'graph_topDomains');
-        //$('.protovisGraph').appendTo('#container');
+        $('span').each(function(index) {
+          if(index == 0) { $(this).attr('id', 'graph_time'); }
+          else if(index == 1) { $(this).attr('id', 'graph_topDomains'); }
+          else if(index == 2) { $(this).attr('id', 'graph_focus'); }
+        });
+        
+        //time num visits graph
         $('#graph_time').appendTo('#container');
         $('#container').append('<p>(Todo: Axes must change when data changes)<\/p>');
+        
+        //spotlight focus graph
+        $('#container').append('<div class="chart_title" style="margin-top:20px">Focus Graph: Spotlight on <a href="javascript:void(0)">reddit.com<\/a><\/div>');
+        $('#container').append('<div>Hourly Usage<\/div>');
+        $('#graph_focus').appendTo('#container');
+        
+        //top domains graph
         $('#container').append('<div class="chart_title" style="margin-top:20px">Top Domains<\/div>');
         $('#graph_topDomains').appendTo('#container');
       }
