@@ -27,23 +27,30 @@ function visitsReady(callback) {
 //   maxTime: int
 //   minTime: int
 //   domain: string
-//   url: string (not implemented)
+//   url: string
 //   category: string (not implemented)
 //   visitId: string (not implemented)
 function getVisits(filter) {
     filter = filter || {}
     var filteredVisits = [];
 
+
+    if (filter.url) {
+        var filterUri = parseUri(filter.url);
+    }
     for (var i in _visits) {
         var visit = _visits[i];
-        var domain = parseUri(visit.url).host;
-        if (filter.domain && domain !== filter.domain) {
+        var uri = parseUri(visit.url);
+        if (filter.domain && uri.host !== filter.domain) {
             continue;
         }
         if (filter.minTime && visit.time < filter.minTime) {
             continue;
         }
         if (filter.maxTime && visit.time > filter.maxTime) {
+            continue;
+        }
+        if (filter.url && (uri.host !== filterUri.host || uri.path !== filterUri.path || uri.query !== filterUri.query)) {
             continue;
         }
         filteredVisits.push(visit);
