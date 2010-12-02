@@ -297,22 +297,38 @@
         }
         
         function renderPingsGraph() {
-          var domainString = "www.reddit.com";
-          var domainFilter = {"domain": domainString};
-          pings = getVisits(domainFilter);
-          var base = pings[1].time;
-          dataAwesome = pv.range(1, 24, 1).map(function(x) {
-            //return {x: pings[x].time, y: 30, z: 5};
-            var timeVar = pings[x].time - base;
-            timeVar = timeVar / 10000000.0;
-            return {x: timeVar, y: 30, z: 10};
+          var minTime = 1290000000000;
+          var maxTime = minTime + (86400 * 1000); //86400 = seconds per day
+          var range = maxTime - minTime;
+        
+          var domainString1 = "www.reddit.com";
+          var domainFilter1 = {"domain": domainString1, "minTime": minTime, "maxTime": maxTime};
+          pings1 = getVisits(domainFilter1);
+          
+          var domainString2 = "mail.google.com";
+          var domainFilter2 = {"domain": domainString2, "minTime": minTime, "maxTime": maxTime};
+          pings2 = getVisits(domainFilter2);
+          
+          dataAwesome = pv.range(0, pings1.length + pings2.length, 1).map(function(x) {
+            if(x < pings1.length) {
+              var timeVar = pings1[x].time;
+              timeVar -= minTime;
+              timeVar = timeVar / range;
+              return {x: timeVar, y: 30, z: 10, w: 1};
+            }
+            else {
+              var timeVar = pings2[x - pings1.length].time;
+              timeVar -= minTime;
+              timeVar = timeVar / range;
+              return {x: timeVar, y: 15, z: 10, w: 99};
+            }
           });
-  
+          
           var w = 800,
           h = 200,
-          x = pv.Scale.linear(0, 99).range(0, w),
+          x = pv.Scale.linear(0, 1).range(0, w),
           y = pv.Scale.linear(0, 50).range(0, h),
-          c = pv.Scale.log(1, 100).range("orange", "brown");
+          c = pv.Scale.log(1, 100).range("blue", "red");
 
           /* The root panel. */
           var visAwesome = new pv.Panel()
@@ -332,7 +348,11 @@
             
             temp.add(pv.Label)
               .visible(function(d) d == 30)
-              .text(domainString);
+              .text(domainString1);
+              
+            temp.add(pv.Label)
+              .visible(function(d) d == 15)
+              .text(domainString2);
           
           /* X-axis and ticks. */
           visAwesome.add(pv.Rule)
@@ -349,7 +369,7 @@
             .add(pv.Dot)
               .left(function(d) x(d.x))
               .bottom(function(d) y(d.y))
-              .strokeStyle(function(d) c(d.z))
+              .strokeStyle(function(d) c(d.w))
               .fillStyle(function() this.strokeStyle().alpha(.2))
               .size(function(d) d.z)
               .title(function(d) d.z.toFixed(1));
