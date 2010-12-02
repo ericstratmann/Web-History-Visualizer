@@ -296,10 +296,72 @@
           compareVis.render();
         }
         
+        function renderPingsGraph() {
+          var domainString = "www.reddit.com";
+          var domainFilter = {"domain": domainString};
+          pings = getVisits(domainFilter);
+          var base = pings[1].time;
+          dataAwesome = pv.range(1, 24, 1).map(function(x) {
+            //return {x: pings[x].time, y: 30, z: 5};
+            var timeVar = pings[x].time - base;
+            timeVar = timeVar / 10000000.0;
+            return {x: timeVar, y: 30, z: 10};
+          });
+  
+          var w = 800,
+          h = 200,
+          x = pv.Scale.linear(0, 99).range(0, w),
+          y = pv.Scale.linear(0, 50).range(0, h),
+          c = pv.Scale.log(1, 100).range("orange", "brown");
+
+          /* The root panel. */
+          var visAwesome = new pv.Panel()
+              .width(w)
+              .height(h)
+              .bottom(20)
+              .left(100)
+              .right(10)
+              .top(5);
+           
+          /* Y-axis and ticks. */
+          var temp = visAwesome.add(pv.Rule)
+              .data(y.ticks())
+              .bottom(y)
+              .strokeStyle(function(d) d ? "#eee" : "#000")
+            .anchor("left");
+            
+            temp.add(pv.Label)
+              .visible(function(d) d == 30)
+              .text(domainString);
+          
+          /* X-axis and ticks. */
+          visAwesome.add(pv.Rule)
+              .data(x.ticks())
+              .left(x)
+              .strokeStyle(function(d) d ? "#eee" : "#000")
+            .anchor("bottom").add(pv.Label)
+              .visible(function(d) d > 0 && d < 100)
+              .text(x.tickFormat);
+          
+          /* The dot plot! */
+          visAwesome.add(pv.Panel)
+              .data(dataAwesome)
+            .add(pv.Dot)
+              .left(function(d) x(d.x))
+              .bottom(function(d) y(d.y))
+              .strokeStyle(function(d) c(d.z))
+              .fillStyle(function() this.strokeStyle().alpha(.2))
+              .size(function(d) d.z)
+              .title(function(d) d.z.toFixed(1));
+            
+          visAwesome.render();
+        }
+        
+        
         visitsReady(renderNumVisitsGraph);
         visitsReady(renderTopDomains);
         visitsReady(renderFocusGraph);
-        visitsReady(renderComparisonGraph);
+        visitsReady(renderPingsGraph);
         visitsReady(initFunc);
         
         function updateNumVisitsData(begin, end) {
@@ -353,7 +415,7 @@
           if(index == 0) { $(this).attr('id', 'graph_time'); }
           else if(index == 1) { $(this).attr('id', 'graph_topDomains'); }
           else if(index == 2) { $(this).attr('id', 'graph_focus'); }
-          else if(index == 3) { $(this).attr('id', 'graph_compare'); }
+          else if(index == 3) { $(this).attr('id', 'graph_pings'); }
         });
         
         //time num visits graph
@@ -365,16 +427,15 @@
         $('#container').append('<div>Hourly Usage<\/div>');
         $('#graph_focus').appendTo('#container');
         
-        //comparison graph
-        $('#container').append('<div class="chart_title" style="margin-top:20px">Comparison of <a href="javascript:void(0)">reddit.com<\/a> and something<\/div>');
-        $('#container').append('<div>Hourly Usage<\/div>');
-        $('#graph_compare').appendTo('#container');
-        
         //top domains graph
         $('#container').append('<div class="chart_title" style="margin-top:20px">Top Domains<\/div>');
         $('#graph_topDomains').appendTo('#container');
         $('#loading').hide();
         $('#container').show();
+        
+        //pings graph
+        $('#container').append('<div class="chart_title" style="margin-top:20px">Individual Visits to <a href="javascript:void(0)">reddit.com<\/a><\/div>');
+        $('#graph_pings').appendTo('#container');
       }
       //setTimeout("initFunc();", 500);
     </script>
