@@ -27,7 +27,9 @@ function getTimeScaleFunc(scale) {
 function getHistory(callback) {
     var query = {
         text: '',
-        maxResults: 100000
+        maxResults: 100000,
+        startTime: 0,
+        endTime: new Date().getTime()
     };
     chrome.history.search(query, callback);
 }

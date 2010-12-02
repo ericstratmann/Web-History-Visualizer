@@ -27,23 +27,30 @@ function visitsReady(callback) {
 //   maxTime: int
 //   minTime: int
 //   domain: string
-//   url: string (not implemented)
+//   url: string
 //   category: string (not implemented)
 //   visitId: string (not implemented)
 function getVisits(filter) {
     filter = filter || {}
     var filteredVisits = [];
 
+
+    if (filter.url) {
+        var filterUri = parseUri(filter.url);
+    }
     for (var i in _visits) {
         var visit = _visits[i];
-        var domain = parseUri(visit.url).host;
-        if (filter.domain && domain !== filter.domain) {
+        var uri = parseUri(visit.url);
+        if (filter.domain && uri.host !== filter.domain) {
             continue;
         }
         if (filter.minTime && visit.time < filter.minTime) {
             continue;
         }
         if (filter.maxTime && visit.time > filter.maxTime) {
+            continue;
+        }
+        if (filter.url && (uri.host !== filterUri.host || uri.path !== filterUri.path || uri.query !== filterUri.query)) {
             continue;
         }
         filteredVisits.push(visit);
@@ -76,6 +83,35 @@ function numVisitsByURL(visits) {
         numVisits[domain]++;
     }
     return numVisits;
+}
+
+// Returns a hash of the form {2010: 12345, ...}, showing the number of minutes
+// browsed per unit of time.
+// `visits` should NOT be filtered except possibly by time.
+function timeSpentBrowsing(visits, timeScale) {
+    var IDLE_CUTOFF = 5 * 60 * 1000; // 5 minutes
+    var timeSpent = {};
+    sortBy(visits, "time");
+    var last = visits[0].time;
+    var func = getTimeScaleFunc(timeScale);
+
+    for (var i in visits) {
+        var visit = visits[i];
+        var bucket = new Date(visit.time)[func]();
+        timeSpent[bucket] = timeSpent[bucket] || 0;
+        var timeSinceLast = visit.time - last;
+        if (timeSinceLast > IDLE_CUTOFF) {
+            timeSpent[bucket] += IDLE_CUTOFF/(60*1000);
+        } else {
+            timeSpent[bucket] += timeSinceLast/(60*1000);
+        }
+        last = visit.time;
+    }
+    timeSpent[bucket] += IDLE_CUTOFF/(60*1000);
+    for (var i in timeSpent) {
+        timeSpent[i] = Math.round(timeSpent[i]);
+    }
+    return timeSpent;
 }
 
 // Converts a hash into an array of the form: 
