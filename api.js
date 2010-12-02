@@ -85,6 +85,35 @@ function numVisitsByURL(visits) {
     return numVisits;
 }
 
+// Returns a hash of the form {2010: 12345, ...}, showing the number of minutes
+// browsed per unit of time.
+// `visits` should NOT be filtered except possibly by time.
+function timeSpentBrowsing(visits, timeScale) {
+    var IDLE_CUTOFF = 5 * 60 * 1000; // 5 minutes
+    var timeSpent = {};
+    sortBy(visits, "time");
+    var last = visits[0].time;
+    var func = getTimeScaleFunc(timeScale);
+
+    for (var i in visits) {
+        var visit = visits[i];
+        var bucket = new Date(visit.time)[func]();
+        timeSpent[bucket] = timeSpent[bucket] || 0;
+        var timeSinceLast = visit.time - last;
+        if (timeSinceLast > IDLE_CUTOFF) {
+            timeSpent[bucket] += IDLE_CUTOFF/(60*1000);
+        } else {
+            timeSpent[bucket] += timeSinceLast/(60*1000);
+        }
+        last = visit.time;
+    }
+    timeSpent[bucket] += IDLE_CUTOFF/(60*1000);
+    for (var i in timeSpent) {
+        timeSpent[i] = Math.round(timeSpent[i]);
+    }
+    return timeSpent;
+}
+
 // Converts a hash into an array of the form: 
 // [{key: ..., val: ...}, ...]
 // The array will be sorted by key unless the optional `sortByValue` is true,
