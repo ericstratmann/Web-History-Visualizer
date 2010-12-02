@@ -52,7 +52,7 @@
         });
         /* Sizing and scales. */
         w_bar = 700;
-        h_bar = 650;
+        h_bar = 300;
         //x_bar = pv.Scale.linear(0, 1500).range(0, w_bar);
         x_bar = pv.Scale.linear(td_data, function(d) d).range(0, w_bar);
         y_bar = pv.Scale.ordinal(pv.range(numDomainsToShow)).splitBanded(0, h_bar, 4/5);
@@ -72,6 +72,10 @@
             .top(function() y_bar(this.index))
             .height(y_bar.range().band)
             .left(0)
+            .cursor("pointer")
+            .event("mouseover", function() this.fillStyle("#0a4"))
+            .event("mouseout", function() this.fillStyle("#27f"))
+            .event("click", function() alert(sorted[this.index].key + " - TODO: show some cool stuff"))
             .width(x_bar);
         
         /* The value label. */
@@ -226,9 +230,72 @@
           focusVis.render();
         }
         
+        //renders the graph with a focus on a particular domain
+        function renderComparisonGraph() {
+          //var domainName = "www.reddit.com"; //TODO: change this dynamically based on user input
+          var domainFilter = {"domain": "www.reddit.com"};
+        
+          numVisitsCompare = numVisitsByTime(getVisits(domainFilter), TimeScale.HOUR);
+          compareData = pv.range(2).map(function() {
+            return pv.range(0, 24, 1).map(function(x) {
+              var i = numVisitsCompare[x];
+              if(i === undefined) {
+                i = 0;
+              }
+              return {x: x, y: i};
+            });
+          });
+          
+          /* Sizing and scales. */
+          w_com = 400;
+          h_com = 200;
+          x_com = pv.Scale.linear(compareData, function(d) d.x).range(0, w_com);
+          y_com = pv.Scale.linear(compareData, function(d) d.y).range(0, h_com);
+          
+          /* The root panel. */
+          compareVis = new pv.Panel()
+            .width(w_com)
+            .height(h_com)
+            .bottom(20)
+            .left(40)
+            .right(10)
+            .top(5);
+          
+          /* Y-axis and ticks. */
+          compareVis.add(pv.Rule)
+            .data(y_com.ticks(10))
+            .bottom(y_com)
+            .strokeStyle(function(d) d ? "#ccc" : "#000")
+            .anchor("left").add(pv.Label)
+            .text(y_com.tickFormat);
+          
+          /* X-axis and ticks. */
+          compareVis.add(pv.Rule)
+            .data(x_com.ticks(10))
+            //.visible(function(d) d > 5)
+            //.strokeStyle("#ccc")
+            .left(x_com)
+            .bottom(-5)
+            .height(5)
+            .anchor("bottom").add(pv.Label)
+            .text(x_com.tickFormat);
+          
+          /* The area with top line. */
+          compareVis.add(pv.Area)
+            .data(compareData)
+            .bottom(1)
+            .left(function(d) x_com(d.x))
+            .height(function(d) y_com(d.y))
+            .fillStyle("#3a5")
+            .anchor("top");
+          
+          compareVis.render();
+        }
+        
         visitsReady(renderNumVisitsGraph);
         visitsReady(renderTopDomains);
         visitsReady(renderFocusGraph);
+        visitsReady(renderComparisonGraph);
         
         function updateNumVisitsData(begin, end) {
           data = pv.range(begin, end, 1).map(function(x) {
@@ -281,6 +348,7 @@
           if(index == 0) { $(this).attr('id', 'graph_time'); }
           else if(index == 1) { $(this).attr('id', 'graph_topDomains'); }
           else if(index == 2) { $(this).attr('id', 'graph_focus'); }
+          else if(index == 3) { $(this).attr('id', 'graph_compare'); }
         });
         
         //time num visits graph
@@ -291,6 +359,11 @@
         $('#container').append('<div class="chart_title" style="margin-top:20px">Focus Graph: Spotlight on <a href="javascript:void(0)">reddit.com<\/a><\/div>');
         $('#container').append('<div>Hourly Usage<\/div>');
         $('#graph_focus').appendTo('#container');
+        
+        //comparison graph
+        $('#container').append('<div class="chart_title" style="margin-top:20px">Comparison of <a href="javascript:void(0)">reddit.com<\/a> and something<\/div>');
+        $('#container').append('<div>Hourly Usage<\/div>');
+        $('#graph_compare').appendTo('#container');
         
         //top domains graph
         $('#container').append('<div class="chart_title" style="margin-top:20px">Top Domains<\/div>');
