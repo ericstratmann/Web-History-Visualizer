@@ -1,0 +1,5 @@
+CS 448B todo
+
+1. Create a "general purpose" visualization method
+2. Work on Protovis text interaction
+3. Fix the time scale axes (goes hand in hand with #1)

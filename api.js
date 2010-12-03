@@ -15,6 +15,22 @@ var TimeScale = {
     YEAR: 4   // 1970 - 
 }
 
+function getTimeScaleMin(timeScale) {
+  if(timeScale == TimeScale.HOUR) { return 0; }
+  else if(timeScale == TimeScale.DAY) { return 1; }
+  else if(timeScale == TimeScale.MONTH) { return 0; }
+  else if(timeScale == TimeScale.YEAR) { return 2007; }
+  return -1;
+}
+
+function getTimeScaleMax(timeScale) {
+  if(timeScale == TimeScale.HOUR) { return 24; }
+  else if(timeScale == TimeScale.DAY) { return 32; }
+  else if(timeScale == TimeScale.MONTH) { return 12; }
+  else if(timeScale == TimeScale.YEAR) { return 2012; }
+  return -1;
+}
+
 // Invokes `callback' when visit data is ready
 var visitCallbacks = [];
 function visitsReady(callback) {
