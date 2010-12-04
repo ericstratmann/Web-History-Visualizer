@@ -4,15 +4,15 @@
 
 // Shows a list of all visited websites
 function showHistory() {
-    //alert('awef');
-    var filter = {minTime: new Date().getTime() - 60 * 60 * 24 * 1000}
+    var filter = {minTime: new Date().getTime() - 1 * 24 * 60 * 60 * 1000}
     var visits = getVisits(filter);
     sortBy(visits, "time");
     visits.reverse()
     for (var i in visits) {
         var url = visits[i].url;
+        var timeStr = dateToStr(new Date(visits[i].time));
         var title = visits[i].title || "No title";
-        var html = "<a href='" + url + "'>" + title + "</a><br/>";
+        var html = timeStr + ": <a href='" + url + "'>" + title + "</a><br/>";
         $("#results").append(html);
     }
 }
