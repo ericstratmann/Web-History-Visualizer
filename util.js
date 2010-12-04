@@ -34,6 +34,18 @@ function getHistory(callback) {
     chrome.history.search(query, callback);
 }
 
+// Converts a date object into a human readable date string
+function dateToStr(date) {
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    var month = months[date.getMonth()];
+    var day = date.getDay();
+    var hour = date.getHours();
+    var minutes = (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
+    return month + " " + day + " " + hour + ":" + minutes;
+}
+
+
 // Sorts an array of objects based on the `field' property of each object
 // e.g. sortBy([{a:2}, {a:1}], "a") => [{a:1}, {a:2}]
 function sortBy(arr, field) {
