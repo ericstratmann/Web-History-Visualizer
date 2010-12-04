@@ -245,26 +245,17 @@
           var range = maxTime - minTime;
           var totalPings = new Array();
           for(var i = 0; i < domains.length; i++) {
-            var domainString = domains[i];
-            var domainFilter = {"domain":domainString, "minTime": minTime, "maxTime": maxTime};
-            var pingsList = getVisits(domainFilter);
+            var pingsList = getVisits({"domain":domains[i], "minTime": minTime, "maxTime": maxTime});
             totalPings = totalPings.concat(pingsList);
           }
           
           var colorScale = Math.floor(98 / (domains.length - 1));
           
-          dataAwesome = pv.range(0, totalPings.length, 1).map(function(x) {
-            var obj = totalPings[x];
-            var timeVar = obj.time;
-            /*
-            timeVar -= minTime;
-            timeVar = timeVar / range;
-            */
-            
+          var pingsData = pv.range(0, totalPings.length, 1).map(function(x) {
             var y = 10;
             var color = 1;
             for(var i = 0; i < domains.length; i++) {
-              if(obj.url.indexOf(domains[i]) >= 0) {
+              if(totalPings[x].url.indexOf(domains[i]) >= 0) {
                 break;
               }
               else {
@@ -273,86 +264,117 @@
               }
             }
             
-            return {x: new Date(timeVar), y: y, z: 10, w: color};
+            return {x: new Date(totalPings[x].time), y: y, z: 10, w: color};
           });
           
-          var w = 800,
-          h = 200,
-          x = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w),
-          y = pv.Scale.linear(0, domains.length * 10 + 10).range(0, h),
-          c = pv.Scale.linear(1, 100).range("blue", "red");
+          var w_pin = 780,
+          h_pin = (domains.length + 1) * 25,
+          x_pin = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w_pin),
+          y_pin = pv.Scale.linear(0, domains.length * 10 + 10).range(0, h_pin),
+          c_pin = pv.Scale.linear(1, 100).range("blue", "red");
 
           /* The root panel. */
-          var visAwesome = new pv.Panel()
-              .width(w)
-              .height(h)
+          var pingsVis = new pv.Panel()
+              .width(w_pin)
+              .height(h_pin)
               .bottom(20)
-              .left(100)
+              .left(140)
               .right(10)
               .top(5);
            
           /* Y-axis and ticks. */
-          var temp = visAwesome.add(pv.Rule)
-              .data(y.ticks())
-              .bottom(y)
+          var pingsVis_yAxis = pingsVis.add(pv.Rule)
+              .data(y_pin.ticks())
+              .bottom(y_pin)
               .strokeStyle(function(d) d ? "#eee" : "#000")
-            .anchor("left");
-            
-            /*
-            temp.add(pv.Label)
-              .visible(function(d) d == 30)
-              .text(domainString1);
-              
-            temp.add(pv.Label)
-              .visible(function(d) d == 15)
-              .text(domainString2);
-              */
+              .visible(function(d) d % 10 == 0)
+              .anchor("left");
           
-          temp.add(pv.Label)
+          
+          pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 10)
               .text(domains[0]);
           if(domains.length > 1) {
-            temp.add(pv.Label)
+            pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 20)
               .text(domains[1]);
           }
           if(domains.length > 2) {
-            temp.add(pv.Label)
+            pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 30)
               .text(domains[2]);
           }
           if(domains.length > 3) {
-            temp.add(pv.Label)
+            pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 40)
               .text(domains[3]);
           }
           if(domains.length > 4) {
-            temp.add(pv.Label)
+            pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 50)
               .text(domains[4]);
           }
+          if(domains.length > 5) {
+            pingsVis_yAxis.add(pv.Label)
+              .visible(function(d) d == 60)
+              .text(domains[5]);
+          }
+          if(domains.length > 6) {
+            pingsVis_yAxis.add(pv.Label)
+              .visible(function(d) d == 70)
+              .text(domains[6]);
+          }
+          if(domains.length > 7) {
+            pingsVis_yAxis.add(pv.Label)
+              .visible(function(d) d == 80)
+              .text(domains[7]);
+          }
           
           /* X-axis and ticks. */
-          visAwesome.add(pv.Rule)
-              .data(x.ticks())
-              .left(x)
+          pingsVis.add(pv.Rule)
+              .data(x_pin.ticks())
+              .left(x_pin)
               .strokeStyle(function(d) "#888")
             .anchor("bottom").add(pv.Label)
-              .text(x.tickFormat);
+              .text(x_pin.tickFormat);
           
           /* The dot plot! */
-          visAwesome.add(pv.Panel)
-              .data(dataAwesome)
+          pingsVis_dots = pingsVis.add(pv.Panel)
+              .data(pingsData)
             .add(pv.Dot)
-              .left(function(d) x(d.x))
-              .bottom(function(d) y(d.y))
-              .strokeStyle(function(d) c(d.w))
+              .left(function(d) x_pin(d.x))
+              .bottom(function(d) y_pin(d.y))
+              .strokeStyle(function(d) c_pin(d.w))
               .fillStyle(function() this.strokeStyle().alpha(.2))
               .size(function(d) d.z)
               .title(function(d) d.z.toFixed(1));
             
-          visAwesome.render();
+          pingsVis.render();
         }
+        
+        function refreshPingsGraph(minTime, maxTime) {
+          $('#graph_pings').hide();
+          $('#graph_pings').removeAttr('id');
+          renderPingsGraph(minTime, maxTime, domainsList);
+          $('span').last().attr('id', 'graph_pings');
+          $('#graph_pings').appendTo('#container');
+        }
+        
+        function updatePingsGraph_addDomain(newDomain) {
+          var minTime = 1289900000000;
+          var maxTime = minTime + (86400 * 1000); //86400 = seconds per day
+          domainsList.push(newDomain);
+          refreshPingsGraph(minTime, maxTime);
+        }
+        
+        function updatePingsGraph_time(inyear, inmonth, inday) {
+          var minTime = new Date(inyear, inmonth-1, inday).getTime();
+          var maxTime = minTime + (86400 * 1000); //86400 = seconds per day
+          refreshPingsGraph(minTime, maxTime);
+          $('#pings_date').html('Visits for ' + inmonth + '-' + inday + '-' + inyear);
+        }
+        
+        
         
         
         
@@ -364,14 +386,13 @@
         }
         
         function renderDefaultPingsGraph() {
-          var minTime = 1290000000000;
+          var minTime = 1289900000000;
           var maxTime = minTime + (86400 * 1000); //86400 = seconds per day
-          var domains = new Array();
-          domains.push("www.reddit.com");
-          domains.push("mail.google.com");
-          domains.push("facebook.com");
-          domains.push("en.wikipedia.org");
-          renderPingsGraph(minTime, maxTime, domains);
+          domainsList = new Array();
+          domainsList.push("www.reddit.com");
+          domainsList.push("mail.google.com");
+          domainsList.push("facebook.com");
+          renderPingsGraph(minTime, maxTime, domainsList);
         }
         
         
@@ -454,6 +475,7 @@
         
         //pings graph
         $('#container').append('<div class="chart_title" style="margin-top:20px">Comparison of Visits to <a href="javascript:void(0)">reddit.com<\/a> and <a href="javascript:void(0)">mail.google.com<\/a><\/div>');
+        $('#container').append('<div id="pings_date">Visits for DATE<\/div>');
         $('#graph_pings').appendTo('#container');
       }
       //setTimeout("initFunc();", 500);
