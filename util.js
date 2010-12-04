@@ -34,6 +34,36 @@ function getHistory(callback) {
     chrome.history.search(query, callback);
 }
 
+// Returns the amount of time 'units' between the most and least recent
+// visit in `visits'. For example, if the timeScale is HOUR, it'll return
+// the number of hours inbetween the first and last visit
+function getTimeSpan(visits, timeScale) {
+    var min = new Date().getTime();
+    var max = 0;
+    for (var i in visits) {
+        var time = visits[i].time;
+        if (time < min) {
+            min = time;
+        }
+        if (time > max) {
+            max = time;
+        }
+    }
+
+    var diff = max - min;
+    if (timeScale === TimeScale.HOUR) {
+        return diff/(60*60*1000);
+    } else if (timeScale === TimeScale.DAY) {
+        return diff/(24*60*60*1000);
+    } else if (timeScale === TimeScale.MONTH) {
+        return diff/(30*24*60*60*1000);
+    } else if (timeScale === TimeScale.YEAR) {
+        return diff/(365*24*60*60*1000);
+    } else {
+        throw "Invalid timeScale"
+    }
+}
+
 // Converts a date object into a human readable date string
 function dateToStr(date) {
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
