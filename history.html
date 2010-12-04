@@ -251,32 +251,34 @@
             totalPings = totalPings.concat(pingsList);
           }
           
-          var wScale = Math.floor(98 / (domains.length - 1));
+          var colorScale = Math.floor(98 / (domains.length - 1));
           
           dataAwesome = pv.range(0, totalPings.length, 1).map(function(x) {
             var obj = totalPings[x];
             var timeVar = obj.time;
+            /*
             timeVar -= minTime;
             timeVar = timeVar / range;
+            */
             
             var y = 10;
-            var w = 1;
+            var color = 1;
             for(var i = 0; i < domains.length; i++) {
               if(obj.url.indexOf(domains[i]) >= 0) {
                 break;
               }
               else {
                 y += 10;
-                w += wScale;
+                color += colorScale;
               }
             }
             
-            return {x: timeVar, y: y, z: 10, w: w};
+            return {x: new Date(timeVar), y: y, z: 10, w: color};
           });
           
           var w = 800,
           h = 200,
-          x = pv.Scale.linear(0, 1).range(0, w),
+          x = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w),
           y = pv.Scale.linear(0, domains.length * 10 + 10).range(0, h),
           c = pv.Scale.linear(1, 100).range("blue", "red");
 
@@ -334,9 +336,8 @@
           visAwesome.add(pv.Rule)
               .data(x.ticks())
               .left(x)
-              .strokeStyle(function(d) d ? "#eee" : "#000")
+              .strokeStyle(function(d) "#888")
             .anchor("bottom").add(pv.Label)
-              .visible(function(d) d > 0 && d < 100)
               .text(x.tickFormat);
           
           /* The dot plot! */
