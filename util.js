@@ -69,7 +69,7 @@ function dateToStr(date) {
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     var month = months[date.getMonth()];
-    var day = date.getDay();
+    var day = date.getDate();
     var hour = date.getHours();
     var minutes = (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
     return month + " " + day + " " + hour + ":" + minutes;
