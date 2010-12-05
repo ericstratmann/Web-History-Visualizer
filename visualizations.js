@@ -8,13 +8,34 @@ function showHistory() {
     var visits = getVisits(filter);
     sortBy(visits, "time");
     visits.reverse()
-    for (var i in visits) {
-        var url = visits[i].url;
-        var timeStr = dateToStr(new Date(visits[i].time));
-        var title = visits[i].title || "No title";
-        var html = timeStr + ": <a href='" + url + "'>" + title + "</a><br/>";
+
+    visits.forEach(function(visit, id) {
+        var parsed = parseUri(visit.url);
+        var url = visit.url;
+
+
+        var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(new Date(visit.time)) + "</a>";
+        var title = visit.title || "No title";
+        var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
+
+        var html = timeStr + ": <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + "<br/>";
         $("#results").append(html);
-    }
+
+        $("#date-" + id).click(function() {
+            $("#results").html("");
+            alert("Show info for this date");
+        });
+        $("#visit-" + id).click(function() {
+            $("#results").html("");
+            renderAreaGraph(parsed.host, TimeScale.DAY);
+            $("#results").append("Show all visits here");
+        });
+        $("#domain-" + id).click(function() {
+            $("#results").html("");
+            renderAreaGraph(parsed.host, TimeScale.DAY);
+            $("#results").append("Show all visits here");
+        });
+    });
 }
 
 // Displays the number of pages visited per day
