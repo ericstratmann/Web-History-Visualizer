@@ -22,17 +22,17 @@ function showHistory() {
         $("#results").append(html);
 
         $("#date-" + id).click(function() {
-            $("#results").html("");
+            $("#results").html("<div id='chart'></div>");
             renderDateView(date);
         });
         $("#visit-" + id).click(function() {
-            $("#results").html("");
-            renderAreaGraph(parsed.host, TimeScale.DAY);
+            $("#results").html("<div id='chart'></div>");
+            renderAreaGraph('chart', parsed.host, TimeScale.DAY);
             $("#results").append("Show all visits here");
         });
         $("#domain-" + id).click(function() {
-            $("#results").html("");
-            renderAreaGraph(parsed.host, TimeScale.DAY);
+            $("#results").html("<div id='chart'></div>");
+            renderAreaGraph('chart', parsed.host, TimeScale.DAY);
             $("#results").append("Show all visits here");
         });
     });
