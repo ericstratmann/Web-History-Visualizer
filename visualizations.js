@@ -8,38 +8,21 @@ function showHistory() {
     var visits = getVisits(filter);
     sortBy(visits, "time");
     visits.reverse()
-
-    visits.forEach(function(visit, id) {
-        var parsed = parseUri(visit.url);
-        var url = visit.url;
-        var date = new Date(visit.time);
-
-        var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a>" + timeToStr(date);
-        var title = visit.title || "No title";
-        var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
-
-        var html = timeStr + ": <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + "<br/>";
-        $("#results").append(html);
-
-        $("#date-" + id).click(function() {
-            $("#results").html("<div id='chart'></div>");
-            renderDateView(date);
-        });
-        $("#visit-" + id).click(function() {
-            $("#results").html("<div id='chart'></div>");
-            renderAreaGraph('chart', parsed.host, TimeScale.DAY);
-            $("#results").append("Show all visits here");
-        });
-        $("#domain-" + id).click(function() {
-            $("#results").html("<div id='chart'></div>");
-            renderAreaGraph('chart', parsed.host, TimeScale.DAY);
-            $("#results").append("Show all visits here");
-        });
-    });
+    outputVisits(visits);
 }
 
 function renderDateView(date) {
+    $("#results").html("<div id='chart'></div>");
     $("#results").append("On the day of " + dateToStr(date) + " you did some stuff");
+    var start = getDayMin(date);
+    var end = getDayMax(date);
+    var filter = {
+        minTime: start,
+        maxTime: end
+    }
+    var visits = getVisits(filter);
+    renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
+    outputVisits(visits);
 }
 
 // Displays the number of pages visited per day
