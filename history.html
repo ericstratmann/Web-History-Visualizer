@@ -24,7 +24,6 @@
         <a href="javascript:void(0)" class="nav_link clickable_link" id="showHistory">Show History</a>
         <a href="javascript:void(0)" class="nav_link clickable_link" id="pagesPerDay">Number of Pages Per Day</a>
         <a href="javascript:void(0)" class="nav_link clickable_link" id="mostVisited">Most visited websites</a>
-        <a href="javascript:void(0)" class="nav_link" id="tempLink">TEMP</a>
       </div>
       <div class="chart_title">
         Number of Visits per Day
@@ -48,18 +47,21 @@
         */
         
         
-        var td_data = pv.range(numDomainsToShow).map(function(d) { 
+        td_data = pv.range(numDomainsToShow).map(function(d) { 
           if(sorted[d] === undefined) {
             return 0;
           }
           return sorted[d].val;
         });
+        
+        td_data.push(0);
         /* Sizing and scales. */
         w_bar = 700;
         h_bar = 300;
-        //x_bar = pv.Scale.linear(0, 1500).range(0, w_bar);
         x_bar = pv.Scale.linear(td_data, function(d) d).range(0, w_bar);
         y_bar = pv.Scale.ordinal(pv.range(numDomainsToShow)).splitBanded(0, h_bar, 4/5);
+        
+        td_data.pop();
         
         /* The root panel. */
         topDomains = new pv.Panel()
@@ -352,6 +354,8 @@
           pingsVis.render();
         }
         
+        
+        //METHODS TO UPDATE THE PINGS GRAPH
         function refreshPingsGraph(minTime, maxTime) {
           $('#graph_pings').hide();
           $('#graph_pings').removeAttr('id');
