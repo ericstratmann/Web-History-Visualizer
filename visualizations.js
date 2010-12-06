@@ -14,7 +14,7 @@ function showHistory() {
         var url = visit.url;
         var date = new Date(visit.time);
 
-        var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  " " + timeToStr(date);"</a>";
+        var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a>" + timeToStr(date);
         var title = visit.title || "No title";
         var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
 
