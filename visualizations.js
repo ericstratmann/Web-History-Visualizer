@@ -8,31 +8,32 @@ function showHistory() {
     var visits = getVisits(filter);
     sortBy(visits, "time");
     visits.reverse()
-    for (var i in visits) {
-        var url = visits[i].url;
-        var timeStr = dateToStr(new Date(visits[i].time));
-        var title = visits[i].title || "No title";
-        var html = timeStr + ": <a href='" + url + "'>" + title + "</a><br/>";
-        $("#results").append(html);
+    outputVisits(visits);
+}
+
+function renderDateView(date) {
+    $("#results").html("<div id='chart'></div>");
+    $("#results").append("On the day of " + dateToStr(date) + " you did some stuff");
+    var start = getDayMin(date);
+    var end = getDayMax(date);
+    var filter = {
+        minTime: start,
+        maxTime: end
     }
+    var visits = getVisits(filter);
+    renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
+    outputVisits(visits);
 }
 
 // Displays the number of pages visited per day
 function pagesPerDay() {
-    var numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
-    for (var time in numVisits) {
-        $("#results").append(time + ": " + numVisits[time] + "<br/>");
-    }
-
-
+    $("#results").html("<div id='chart'></div>");
+    $("#results").append("This is how many pages you view per day");
+    renderNumVisitsGraph(getVisits(), 'chart');
 }
 
 // Displays the most visited domains
 function mostVisited() {
-    var numDomainsToShow = 8;
-    var numVisits = numVisitsByURL(getVisits());
-    var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
-    for (var i in sorted) {
-        $("#results").append(sorted[i].key + ": " + sorted[i].val + "<br/>");
-    }
+    $("#results").html("<div id='chart'></div>");
+    renderTopDomains('chart');
 }

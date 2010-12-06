@@ -25,6 +25,7 @@
         <a href="javascript:void(0)" class="nav_link clickable_link" id="pagesPerDay">Number of Pages Per Day</a>
         <a href="javascript:void(0)" class="nav_link clickable_link" id="mostVisited">Most visited websites</a>
       </div>
+      <!--
       <div class="chart_title">
         Number of Visits per Day
       </div>
@@ -34,9 +35,10 @@
         <a href="javascript:void(0)" id="monthScale">month</a> |
         <a href="javascript:void(0)" id="yearScale">year</a>
       </div>
+      -->
       <script type="text/javascript+protovis">
       
-      function renderTopDomains() {
+      function renderTopDomains(out) {
         var numDomainsToShow = 8;
         var numVisits = numVisitsByURL(getVisits());
         var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
@@ -70,7 +72,8 @@
             .bottom(20)
             .left(150)
             .right(10)
-            .top(5);
+            .top(5)
+            .canvas(out);
         
         /* The bars. */
         var bar = topDomains.add(pv.Bar)
@@ -110,8 +113,10 @@
         topDomains.render();
       }
       
-        function renderNumVisitsGraph() {
-          numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
+        function renderNumVisitsGraph(visits, out, timeScale, relative) {
+          timeScale = timeScale || TimeScale.DAY;
+
+          numVisits = numVisitsByTime(visits, timeScale, relative);
           data = pv.range(1, 32, 1).map(function(x) {
             var i = numVisits[x];
             if(i === undefined) {
@@ -132,7 +137,8 @@
             .bottom(20)
             .left(40)
             .right(10)
-            .top(5);
+            .top(5)
+            .canvas(out);
           
           /* Y-axis and ticks. */
           vis.add(pv.Rule)
@@ -178,8 +184,11 @@
         
         //END OLD CODE; begin NEW CODE
         //renders an area graph
-        function renderAreaGraph(domainName, timeScale) {
-          //var domainName = "www.reddit.com"; //TODO: change this dynamically based on user input
+        function renderAreaGraph(out, domainName, timeScale) {
+            $('#container').append('<div class="chart_title" style="margin-top:20px">Focus Graph: Spotlight on <a href="javascript:void(0)">' + domainName + '<\/a><\/div>');
+            $('#container').append('<div>Hourly Usage<\/div>');
+            $('#graph_focus').appendTo('#container');
+
           var domainFilter = {};
           if(domainName) {
             domainFilter = {"domain": domainName};
@@ -209,7 +218,8 @@
             .bottom(20)
             .left(40)
             .right(10)
-            .top(5);
+            .top(5)
+            .canvas(out);
           
           /* Y-axis and ticks. */
           areaVis.add(pv.Rule)
@@ -243,7 +253,7 @@
         }
         
         //renders the timegraph
-        function renderPingsGraph(minTime, maxTime, domains) {
+        function renderPingsGraph(out, minTime, maxTime, domains) {
           var range = maxTime - minTime;
           var totalPings = new Array();
           for(var i = 0; i < domains.length; i++) {
@@ -282,7 +292,8 @@
               .bottom(20)
               .left(140)
               .right(10)
-              .top(5);
+              .top(5)
+              .canvas(out);
            
           /* Y-axis and ticks. */
           var pingsVis_yAxis = pingsVis.add(pv.Rule)
@@ -354,27 +365,25 @@
           pingsVis.render();
         }
         
-        
-        //METHODS TO UPDATE THE PINGS GRAPH
-        function refreshPingsGraph(minTime, maxTime) {
+        function refreshPingsGraph(out, minTime, maxTime) {
           $('#graph_pings').hide();
           $('#graph_pings').removeAttr('id');
-          renderPingsGraph(minTime, maxTime, domainsList);
+          renderPingsGraph(out, minTime, maxTime, domainsList);
           $('span').last().attr('id', 'graph_pings');
           $('#graph_pings').appendTo('#container');
         }
         
-        function updatePingsGraph_addDomain(newDomain) {
+        function updatePingsGraph_addDomain(out, newDomain) {
           var minTime = 1289900000000;
           var maxTime = minTime + (86400 * 1000); //86400 = seconds per day
           domainsList.push(newDomain);
-          refreshPingsGraph(minTime, maxTime);
+          refreshPingsGraph(out, minTime, maxTime);
         }
         
-        function updatePingsGraph_time(inyear, inmonth, inday) {
+        function updatePingsGraph_time(out, inyear, inmonth, inday) {
           var minTime = new Date(inyear, inmonth-1, inday).getTime();
           var maxTime = minTime + (86400 * 1000); //86400 = seconds per day
-          refreshPingsGraph(minTime, maxTime);
+          refreshPingsGraph(out, minTime, maxTime);
           $('#pings_date').html('Visits for ' + inmonth + '-' + inday + '-' + inyear);
         }
         
@@ -382,6 +391,7 @@
         
         
         
+        /*
         //BELOW METHODS FOR TESTING
         //these pass in hard-coded domains to the generic graph methods
         //we can make these dynamic (i.e. user input) later
@@ -398,15 +408,19 @@
           domainsList.push("facebook.com");
           renderPingsGraph(minTime, maxTime, domainsList);
         }
+        */
         
         
         
         //INIT CODE
+        /*
         visitsReady(renderNumVisitsGraph);
         visitsReady(renderTopDomains);
         visitsReady(renderReddit);
         visitsReady(renderDefaultPingsGraph);
+        */
         visitsReady(initFunc);
+        visitsReady(showHistory);
         
         function updateNumVisitsData(begin, end) {
           data = pv.range(begin, end, 1).map(function(x) {
@@ -462,6 +476,7 @@
           else if(index == 3) { $(this).attr('id', 'graph_pings'); }
         });
         
+        /*
         //time num visits graph
         $('#graph_time').appendTo('#container');
         $('#container').append('<p>(Todo: Axes must change when data changes)<\/p>');
@@ -474,13 +489,15 @@
         //top domains graph
         $('#container').append('<div class="chart_title" style="margin-top:20px">Top Domains<\/div>');
         $('#graph_topDomains').appendTo('#container');
-        $('#loading').hide();
-        $('#container').show();
         
         //pings graph
         $('#container').append('<div class="chart_title" style="margin-top:20px">Comparison of Visits to <a href="javascript:void(0)">reddit.com<\/a> and <a href="javascript:void(0)">mail.google.com<\/a><\/div>');
         $('#container').append('<div id="pings_date">Visits for DATE<\/div>');
-        $('#graph_pings').appendTo('#container');
+        $(' graph_pings').appendTo('#container');
+        */
+
+        $('#loading').hide();
+        $('#container').show();
       }
       //setTimeout("initFunc();", 500);
     </script>

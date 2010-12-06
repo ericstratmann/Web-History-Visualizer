@@ -74,9 +74,11 @@ function getVisits(filter) {
    return filteredVisits;
 }
 
-// Returs a hash in the form of {2009: 3, 2010: 5, ...}, showing the number
-// of visits in each time period
-function numVisitsByTime(visits, timeScale) {
+// Returns a hash in the form of {2009: 3, 2010: 5, ...}, showing the number
+// of visits in each time period. If the optional `relative' is passed in,
+// instead of returning the absolute number of visits, it'll return the
+// relative amount (e.g. 5 visits/day instead of 25 visits total)
+function numVisitsByTime(visits, timeScale, relative) {
     var func = getTimeScaleFunc(timeScale);
 
     var numVisits = {};
@@ -84,6 +86,13 @@ function numVisitsByTime(visits, timeScale) {
         var time = new Date(visits[i].time)[func]();
         numVisits[time] = numVisits[time] || 0;
         numVisits[time]++;
+    }
+
+    if (relative) {
+        var span = getTimeSpan(visits, timeScale);
+        for (var i in numVisits) {
+            numVisits[i] = numVisits[i]/span;
+        }
     }
     return numVisits;
 }
