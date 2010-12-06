@@ -198,6 +198,9 @@
             if(i === undefined) {
               i = 0;
             }
+            if(timeScale == TimeScale.HOUR) {
+              return {x: new Date(2010, 1, 1, x), y: i};
+            }
             return {x: x, y: i};
           });
           
@@ -205,6 +208,10 @@
           var w = 400;
           var h = 200;
           var x = pv.Scale.linear(graphData, function(d) d.x).range(0, w);
+          if(timeScale == TimeScale.HOUR) {
+            x = pv.Scale.linear(new Date(2010, 1, 1, 0), new Date(2010, 1, 1, 23)).range(0, w);
+          }
+          
           var y = pv.Scale.linear(graphData, function(d) d.y).range(0, h);
           
           /* The root panel. */
@@ -255,8 +262,9 @@
         //renders the timegraph
         function renderPingsGraph(out, minTime, maxTime, domains) {
           var range = maxTime - minTime;
-          var totalPings = new Array();
+          totalPings = new Array();
           for(var i = 0; i < domains.length; i++) {
+            //alert('domains[i]: ' + domains[i] + ", min: " + minTime + ", max: " + maxTime);
             var pingsList = getVisits({"domain":domains[i], "minTime": minTime, "maxTime": maxTime});
             totalPings = totalPings.concat(pingsList);
           }
