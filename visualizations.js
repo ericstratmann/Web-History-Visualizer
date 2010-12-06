@@ -46,7 +46,7 @@ function renderDateView(date) {
 function pagesPerDay() {
     $("#results").html("<div id='chart'></div>");
     $("#results").append("This is how many pages you view per day");
-    renderNumVisitsGraph('chart');
+    renderNumVisitsGraph(getVisits(), 'chart');
 }
 
 // Displays the most visited domains

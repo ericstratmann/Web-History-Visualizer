@@ -110,8 +110,8 @@
         topDomains.render();
       }
       
-        function renderNumVisitsGraph(out) {
-          numVisits = numVisitsByTime(getVisits(), TimeScale.DAY, true);
+        function renderNumVisitsGraph(visits, out) {
+          numVisits = numVisitsByTime(visits, TimeScale.DAY, true);
           data = pv.range(1, 32, 1).map(function(x) {
             var i = numVisits[x];
             if(i === undefined) {
