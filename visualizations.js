@@ -44,12 +44,9 @@ function renderDateView(date) {
 
 // Displays the number of pages visited per day
 function pagesPerDay() {
-    var numVisits = numVisitsByTime(getVisits(), TimeScale.DAY);
-    for (var time in numVisits) {
-        $("#results").append(time + ": " + numVisits[time] + "<br/>");
-    }
-
-
+    $("#results").html("<div id='chart'></div>");
+    $("#results").append("This is how many pages you view per day");
+    renderNumVisitsGraph('chart');
 }
 
 // Displays the most visited domains
