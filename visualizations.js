@@ -12,9 +12,9 @@ function showHistory() {
     visits.forEach(function(visit, id) {
         var parsed = parseUri(visit.url);
         var url = visit.url;
+        var date = new Date(visit.time);
 
-
-        var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(new Date(visit.time)) + "</a>";
+        var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  " " + timeToStr(date);"</a>";
         var title = visit.title || "No title";
         var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
 
@@ -23,7 +23,7 @@ function showHistory() {
 
         $("#date-" + id).click(function() {
             $("#results").html("");
-            alert("Show info for this date");
+            renderDateView(date);
         });
         $("#visit-" + id).click(function() {
             $("#results").html("");
@@ -36,6 +36,10 @@ function showHistory() {
             $("#results").append("Show all visits here");
         });
     });
+}
+
+function renderDateView(date) {
+    $("#results").append("On the day of " + dateToStr(date) + " you did some stuff");
 }
 
 // Displays the number of pages visited per day

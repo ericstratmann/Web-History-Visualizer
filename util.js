@@ -65,15 +65,20 @@ function getTimeSpan(visits, timeScale) {
 }
 
 // Converts a date object into a human readable date string
-function dateToStr(date) {
+function dateToStr(date, includeTime) {
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     var month = months[date.getMonth()];
     var day = date.getDate();
+    return month + " " + day;
+}
+
+function timeToStr(date) {
     var hour = date.getHours();
     var minutes = (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
-    return month + " " + day + " " + hour + ":" + minutes;
+    return hour + ":" + minutes;
 }
+
 
 
 // Sorts an array of objects based on the `field' property of each object
