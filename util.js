@@ -32,9 +32,23 @@ function outputVisits(visits) {
             $("#results").append("Show all visits here");
         });
         $("#domain-" + id).click(function() {
-            $("#results").html("<div id='chart'></div>");
-            renderAreaGraph('chart', parsed.host, TimeScale.DAY);
-            $("#results").append("Show all visits here");
+            var d = new Date();
+            var minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            var minTime = minDate.getTime();
+            var maxTime = minTime + 86400*1000;
+            var domains = new Array();
+            domains.push(parsed.host);
+            
+            var htmlString = '<div class="chart_title" style="margin-top:20px">Spotlight on <a href="javascript:void(0)">' + parsed.host + '<\/a><\/div>';
+            htmlString += "<div class='chart_heading'>Average Hourly Visits to " + parsed.host + "</div>";
+            htmlString += "<div id='chart'></div>";
+            htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + dateToStr(minDate);
+            htmlString += "</div><div id='pings'></div>";
+            
+            $("#results").html(htmlString);
+            
+            renderAreaGraph('chart', parsed.host, TimeScale.HOUR);
+            renderPingsGraph('pings', minTime, maxTime, domains);
         });
     });
 }

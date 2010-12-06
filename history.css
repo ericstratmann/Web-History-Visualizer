@@ -39,5 +39,12 @@ a {
 
 .chart_title {
   font-weight:bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.chart_heading {
+  font-weight:bold;
   margin-bottom: 5px;
+  font-size: 13px;
 }
