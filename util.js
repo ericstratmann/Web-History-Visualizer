@@ -15,11 +15,11 @@ function outputVisits(visits) {
         var url = visit.url;
         var date = new Date(visit.time);
 
-        var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a>" + timeToStr(date);
+        var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a> " + timeToStr(date);
         var title = visit.title || "No title";
         var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
-
-        var html = timeStr + ": <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + "<br/>";
+        var outbound = "<a href='" + visit.url + "' target='_blank' style='color:#49a'>GO</a>";
+        var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
         $("#results").append(html);
 
         $("#date-" + id).click(function() {
