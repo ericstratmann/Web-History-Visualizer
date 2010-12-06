@@ -1,5 +1,22 @@
-CS 448B todo
+CS 448B todo list
+These are things I've identified that need to be done. I'll post what I'm working on and what my progress is. They are not in any particular priority queue or order. Feel free to move stuff around or add/remove.
 
-1. Create a "general purpose" visualization method
-2. Work on Protovis text interaction
-3. Fix the time scale axes (goes hand in hand with #1)
+Finish before poster day:
+- a bit of CSS polish (not too much, but just for flair)
+- Make sure "Focus Graph:" text does not stay on page when you leave the Focus section
+- Make the Focus section also include the pings graph for that domain/url
+- Give an interface for domain comparison
+	- Pings graph
+	- Focus graph as stacked area
+	- Maybe have both graphs update at once (i.e. you specify a list of domains, and then each graph reflects that? The timescales on both are different but they can have independent timescales)
+
+Finish in general (by Friday, we can do as much of this as possible):
+- Replicate the old history functionality
+	- Pagination, so you can look at old history easily
+	- favicons near urls
+	- Search, if we have time
+- Add in some more history list convenience features
+	- Jump to a date
+	- filter by domain
+- more of a css overhaul
+- Allow for changing timescale on most visited website (i.e. what are the most visited websites this month?)
