@@ -54,10 +54,6 @@ function pagesPerDay() {
 
 // Displays the most visited domains
 function mostVisited() {
-    var numDomainsToShow = 8;
-    var numVisits = numVisitsByURL(getVisits());
-    var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
-    for (var i in sorted) {
-        $("#results").append(sorted[i].key + ": " + sorted[i].val + "<br/>");
-    }
+    $("#results").html("<div id='chart'></div>");
+    renderTopDomains('chart');
 }
