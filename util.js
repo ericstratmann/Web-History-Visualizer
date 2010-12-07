@@ -10,6 +10,9 @@ allVisits(function(all) {
 });
 
 function outputVisits(visits) {
+    sortBy(visits, "time");
+    visits.reverse();
+
     visits.forEach(function(visit, id) {
         var parsed = parseUri(visit.url);
         var url = visit.url;
