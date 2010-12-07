@@ -14,9 +14,13 @@ function outputVisits(visits) {
         var parsed = parseUri(visit.url);
         var url = visit.url;
         var date = new Date(visit.time);
+        var maxTitleLength = 60;
 
         var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a> " + timeToStr(date);
-        var title = visit.title || "No title";
+        var title = (visit.title || "No title");
+        if (title.length > maxTitleLength) {
+            title = title.slice(0, maxTitleLength) + "...";
+        }
         var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
         var outbound = "<a href='" + visit.url + "' target='_blank' style='color:#49a'>GO</a>";
         var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
