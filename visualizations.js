@@ -13,7 +13,13 @@ function showHistory() {
 
 function renderUrlView(url) {
     $("#results").html("");
-    $("#results").append("Coming soon!");
+
+    var filter = {url: url};
+    var visits = getVisits(filter);
+    $("#results").append("<h2>" + url + "</h2>");
+    $("#results").append("<div>You've visited this url " + visits.length + " times</div>");
+
+    outputVisits(visits);
 }
 
 function renderDomainView(domain) {
