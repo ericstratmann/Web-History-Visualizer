@@ -80,7 +80,7 @@
             .cursor("pointer")
             .event("mouseover", function() this.fillStyle("#0a4"))
             .event("mouseout", function() this.fillStyle("#27f"))
-            .event("click", function() alert(sorted[this.index].key + " - TODO: show some cool stuff"))
+            .event("click", function() renderDomainView(sorted[this.index].key))
             .width(x_bar);
         
         /* The value label. */
