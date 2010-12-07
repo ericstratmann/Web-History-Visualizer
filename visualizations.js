@@ -40,6 +40,9 @@ function renderDomainView(domain) {
 
     renderAreaGraph('chart', domain, TimeScale.HOUR);
     renderPingsGraph('pings', minTime, maxTime, domains);
+
+    $("#results").append("<br/>");
+    outputVisits(getVisits({domain: domain}));
 }
 
 function renderDateView(date) {
