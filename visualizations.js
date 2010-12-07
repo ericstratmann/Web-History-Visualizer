@@ -12,8 +12,10 @@ function showHistory() {
 }
 
 function renderDateView(date) {
-    $("#results").html("<div id='chart'></div>");
-    $("#results").append("On the day of " + dateToStr(date) + " you did some stuff");
+    $("#results").html("");
+    $("#results").append("<h2>Overview for " +  dateToStr(date)) + "</h2>";;
+    $("#results").append("<div id='chart'></div>");
+    $("#results").append("<div>Pages you visited on this day</div>");
     var start = getDayMin(date);
     var end = getDayMax(date);
     var filter = {
