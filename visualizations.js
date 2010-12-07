@@ -8,8 +8,10 @@ function showHistory(visits) {
         var filter = {minTime: new Date().getTime() - 1 * 24 * 60 * 60 * 1000}
         var visits = getVisits(filter);
     }
+    $("#results").append("<input type='text'/>");
+    $("#results").append("<input type='submit' value='Search'/><br/>");
     sortBy(visits, "time");
-    visits.reverse()
+    visits.reverse();
     outputVisits(visits);
 }
 
