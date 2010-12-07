@@ -51,7 +51,7 @@ function quickVisits(callback) {
 //   url: string
 //   category: string (not implemented)
 //   visitId: string (not implemented)
-function getvisits(filter) {
+function getVisits(filter) {
     filter = filter || {}
     var filteredVisits = [];
 
