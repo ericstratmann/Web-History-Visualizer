@@ -28,7 +28,11 @@ function outputVisits(visits) {
         var maxTitleLength = 60;
 
         var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a> " + timeToStr(date);
-        var title = (visit.title || "No title");
+        var title = visit.title;
+        if (!title) {
+            return;
+        }
+
         if (title.length > maxTitleLength) {
             title = title.slice(0, maxTitleLength) + "...";
         }
