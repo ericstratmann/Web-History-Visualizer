@@ -67,7 +67,7 @@
             .cursor("pointer")
             //.event("mouseover", function() this.fillStyle("#df6"))
             //.event("mouseout", function() this.fillStyle(barColor))
-            //.event("click", function() alert(sorted[this.index].key + " - TODO: show some cool stuff"))
+            .event("click", function() renderDomainView(sorted[this.index].key))
             .width(x_bar);
         
         /* The value label. */
