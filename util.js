@@ -54,6 +54,31 @@ function getTimeScaleFunc(scale) {
     throw "Invalid TimeScale";
 }
 
+function getGranularTime(date, scale) {
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minutes = date.getMinutes();
+
+    var val;
+    if (scale === TimeScale.HOUR) {
+        val = hour + minutes/60;
+    } else if (scale === TimeScale.DAY) {
+        val = day + hour/24;
+    } else if (scale === TimeScale.MONTH) {
+        val = month = day/31;
+    } else if (scale === TimeScale.YEAR) {
+        val = year + month/12;
+    }
+    return roundDecimal(val, 1);
+}
+
+function roundDecimal(number, numDecimals) {
+    var pow = Math.pow(10, numDecimals);
+    return Math.round(number * pow)/pow;;
+}
+
 
 // Calls `callback' with an array of all history items
 function getHistory(callback) {
