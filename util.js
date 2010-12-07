@@ -8,12 +8,14 @@ allVisits(function(quick) {
     }
 }, true);
 
-allVisits(function(all) {
-    _visits = all;
-    for (var i in visitCallbacks) {
-        visitCallbacks[i]();
-    }
-});
+setTimeout(function() {
+    allVisits(function(all) {
+        _visits = all;
+        for (var i in visitCallbacks) {
+            visitCallbacks[i]();
+        }
+    });
+}, 100);
 
 function outputVisits(visits) {
     sortBy(visits, "time");
@@ -97,7 +99,7 @@ function getHistory(callback, quick) {
     var query = {
         text: '',
         maxResults: max,
-        startTime: 0,
+        startTime: start,
         endTime: new Date().getTime()
     };
     chrome.history.search(query, callback);
@@ -173,12 +175,18 @@ function sortBy(arr, field) {
 // Calls `callback' with an array of all visits to all URLs
 function allVisits(callback, quick) {
     var visits = [];
+    var quickMin = new Date().getTime() - 24 * 60 * 60 * 1000;
     getHistory(function(historyItems) {
         var num = historyItems.length;
         historyItems.forEach(function(history) {
             var details = {url: history.url};
             chrome.history.getVisits(details, function(visitItems) {
                 for (var j in visitItems) {
+                    if (quick) {
+                        if (visitItems[j].visitTime < quickMin) {
+                            continue;
+                        }
+                    }
                     var visit = visitItems[j];
                     visits.push({
                         id: visit.id,
