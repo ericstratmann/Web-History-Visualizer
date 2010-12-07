@@ -2,6 +2,12 @@
 
 var _visits = []
 
+allVisits(function(quick) {
+    for (var i in quickCallbacks) {
+        quickCallbacks[i](quick);
+    }
+}, true);
+
 allVisits(function(all) {
     _visits = all;
     for (var i in visitCallbacks) {
@@ -81,10 +87,16 @@ function roundDecimal(number, numDecimals) {
 
 
 // Calls `callback' with an array of all history items
-function getHistory(callback) {
+function getHistory(callback, quick) {
+    var max = 100000;
+    var start = 0;
+    if (quick) {
+        max = 100;
+        start = new Date().getTime() - 24 * 60 * 60 * 1000;
+    }
     var query = {
         text: '',
-        maxResults: 100000,
+        maxResults: max,
         startTime: 0,
         endTime: new Date().getTime()
     };
@@ -159,7 +171,7 @@ function sortBy(arr, field) {
 }
 
 // Calls `callback' with an array of all visits to all URLs
-function allVisits(callback) {
+function allVisits(callback, quick) {
     var visits = [];
     getHistory(function(historyItems) {
         var num = historyItems.length;
@@ -183,5 +195,5 @@ function allVisits(callback) {
                 }
             });
         });
-    });
+    }, quick);
 }

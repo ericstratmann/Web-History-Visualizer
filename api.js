@@ -37,6 +37,11 @@ function visitsReady(callback) {
     visitCallbacks.push(callback);
 }
 
+var quickCallbacks = [];
+function quickVisits(callback) {
+    quickCallbacks.push(callback);
+}
+
 
 // Returns all visits that match the optional `filter'.
 // A filter object can have any of the following properties:
@@ -46,7 +51,7 @@ function visitsReady(callback) {
 //   url: string
 //   category: string (not implemented)
 //   visitId: string (not implemented)
-function getVisits(filter) {
+function getvisits(filter) {
     filter = filter || {}
     var filteredVisits = [];
 

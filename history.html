@@ -427,8 +427,8 @@
         visitsReady(renderReddit);
         visitsReady(renderDefaultPingsGraph);
         */
-        visitsReady(initFunc);
-        visitsReady(showHistory);
+        quickVisits(initFunc);
+        quickVisits(showHistory);
         
         function updateNumVisitsData(begin, end) {
           data = pv.range(begin, end, 1).map(function(x) {

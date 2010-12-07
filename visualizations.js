@@ -3,9 +3,11 @@
 // in history.html that links to the visualization, e.g. showHistory
 
 // Shows a list of all visited websites
-function showHistory() {
-    var filter = {minTime: new Date().getTime() - 1 * 24 * 60 * 60 * 1000}
-    var visits = getVisits(filter);
+function showHistory(visits) {
+    if (!visits) {
+        var filter = {minTime: new Date().getTime() - 1 * 24 * 60 * 60 * 1000}
+        var visits = getVisits(filter);
+    }
     sortBy(visits, "time");
     visits.reverse()
     outputVisits(visits);
