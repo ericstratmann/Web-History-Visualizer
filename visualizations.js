@@ -51,7 +51,9 @@ function renderDomainView(domain) {
 
 function renderDateView(date) {
     $("#results").html("");
-    $("#results").append("<h2>Overview for " +  dateToStr(date)) + "</h2>";
+    var left = "<img class='arrow' id='left' src='left.png' alt='Back one day'/>";
+    var right = "<img class='arrow' id='right' src='right.png' alt='Back one day'/>";
+    $("#results").append("<h2>Overview for " +  left + dateToStr(date) + right + "</h2>");
     $("#results").append("<div id='chart'></div>");
     $("#results").append("<div>Pages you visited on this day</div>");
     var start = getDayMin(date);
@@ -63,6 +65,14 @@ function renderDateView(date) {
     var visits = getVisits(filter);
     renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
     outputVisits(visits);
+
+    $("#left").click(function() {
+        renderDateView(new Date(date.getTime() - 24 * 60 * 60 * 1000));
+    });
+
+    $("#right").click(function() {
+        renderDateView(new Date(date.getTime() + 24 * 60 * 60 * 1000));
+    });
 }
 
 // Displays the number of pages visited per day
