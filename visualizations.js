@@ -85,11 +85,15 @@ function pagesPerDay() {
 // Displays the number of pages visited per day
 function overviewVis() {
     var htmlString = "<div class='chart_title'>Web browsing overview</div>";
+    htmlString += "<div class='chart_heading'>Last 24 hours</div>";
+    htmlString += "<div id='last24_overview'></div>";
     htmlString += "<div class='chart_heading'>Average Hourly Browsing</div>";
     htmlString += "<div id='hourly_overview'></div>";
     htmlString += "<div class='chart_heading'>Average Daily Browsing</div>";
     htmlString += "<div id='daily_overview'></div>";
     $("#results").html(htmlString);
+    var last24Filter = {minTime: new Date().getTime() - 24 * 60 * 60 * 1000};
+    renderNumVisitsGraph(getVisits(last24Filter), 'last24_overview', TimeScale.HOUR, true);
     renderNumVisitsGraph(getVisits(), 'hourly_overview', TimeScale.HOUR, true);
     renderNumVisitsGraph(getVisits(), 'daily_overview', TimeScale.DAY, true);
 }
