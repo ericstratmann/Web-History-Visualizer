@@ -40,7 +40,7 @@ function renderDomainView(domain) {
 
     $("#results").html(htmlString);
 
-    renderAreaGraph('chart', domain, TimeScale.HOUR);
+    renderAreaGraph('chart', domain, TimeScale.HOUR, true);
     renderPingsGraph('pings', minTime, maxTime, domains);
 
     $("#results").append("<br/>");
@@ -78,8 +78,8 @@ function overviewVis() {
     htmlString += "<div class='chart_heading'>Average Daily Browsing</div>";
     htmlString += "<div id='daily_overview'></div>";
     $("#results").html(htmlString);
-    renderNumVisitsGraph(getVisits(), 'hourly_overview', TimeScale.HOUR);
-    renderNumVisitsGraph(getVisits(), 'daily_overview', TimeScale.DAY);
+    renderNumVisitsGraph(getVisits(), 'hourly_overview', TimeScale.HOUR, true);
+    renderNumVisitsGraph(getVisits(), 'daily_overview', TimeScale.DAY, true);
 }
 
 // Displays the most visited domains

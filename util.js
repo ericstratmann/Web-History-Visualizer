@@ -33,7 +33,7 @@ function outputVisits(visits) {
             title = title.slice(0, maxTitleLength) + "...";
         }
         var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
-        var outbound = "<a href='" + visit.url + "' target='_blank' style='color:#49a'>GO</a>";
+        var outbound = "<a href='" + visit.url + "' target='_blank'><img src='http://bits.wikimedia.org/skins-1.5/vector/images/external-link-ltr-icon.png' /></a>";
         var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
         $("#results").append(html);
 
