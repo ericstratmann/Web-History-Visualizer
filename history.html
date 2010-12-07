@@ -39,18 +39,15 @@
       -->
       <script type="text/javascript+protovis">
       
-      function renderTopDomains(out) {
+      function renderTopDomains(out, barColor, isBounded, minTime, maxTime) {
         var numDomainsToShow = 8;
-        var numVisits = numVisitsByURL(getVisits());
-        var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
-        /*
-        for (var i in sorted) {
-          $("#results").append(sorted[i].key + ": " + sorted[i].val + "<br/>");
+        var filter = {};
+        if(isBounded) {
+          filter = {"minTime":minTime, "maxTime":maxTime};
         }
-        */
-        
-        
-        td_data = pv.range(numDomainsToShow).map(function(d) { 
+        var numVisits = numVisitsByURL(getVisits(filter));
+        var sorted = hashToArray(numVisits, true).slice(-numDomainsToShow);
+        var td_data = pv.range(numDomainsToShow).map(function(d) { 
           if(sorted[d] === undefined) {
             return 0;
           }
@@ -59,10 +56,10 @@
         
         td_data.push(0);
         /* Sizing and scales. */
-        w_bar = 700;
-        h_bar = 300;
-        x_bar = pv.Scale.linear(td_data, function(d) d).range(0, w_bar);
-        y_bar = pv.Scale.ordinal(pv.range(numDomainsToShow)).splitBanded(0, h_bar, 4/5);
+        var w_bar = 700;
+        var h_bar = 300;
+        var x_bar = pv.Scale.linear(td_data, function(d) d).range(0, w_bar);
+        var y_bar = pv.Scale.ordinal(pv.range(numDomainsToShow)).splitBanded(0, h_bar, 4/5);
         
         td_data.pop();
         
@@ -82,10 +79,11 @@
             .top(function() y_bar(this.index))
             .height(y_bar.range().band)
             .left(0)
+            .fillStyle(barColor)
             .cursor("pointer")
-            .event("mouseover", function() this.fillStyle("#0a4"))
-            .event("mouseout", function() this.fillStyle("#27f"))
-            .event("click", function() alert(sorted[this.index].key + " - TODO: show some cool stuff"))
+            //.event("mouseover", function() this.fillStyle("#df6"))
+            //.event("mouseout", function() this.fillStyle(barColor))
+            //.event("click", function() alert(sorted[this.index].key + " - TODO: show some cool stuff"))
             .width(x_bar);
         
         /* The value label. */

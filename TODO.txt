@@ -9,6 +9,7 @@ Finish before poster day:
 	- Maybe have both graphs update at once (i.e. you specify a list of domains, and then each graph reflects that? The timescales on both are different but they can have independent timescales)
 
 Finish in general (by Friday, we can do as much of this as possible):
+- Make the bars in the "Top domains" section clickable and lead to the domain focus page
 - Replicate the old history functionality
 	- Pagination, so you can look at old history easily
 	- favicons near urls

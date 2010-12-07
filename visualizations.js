@@ -84,6 +84,20 @@ function overviewVis() {
 
 // Displays the most visited domains
 function mostVisited() {
-    $("#results").html("<div id='chart'></div>");
-    renderTopDomains('chart');
+    var htmlString = "<div class='chart_title'>Most Visited Domains</div>";
+    htmlString += "<div class='chart_heading'>All Time</div>";
+    htmlString += "<div id='chart_all'></div>";
+    htmlString += "<div class='chart_heading'>Last Month</div>";
+    htmlString += "<div id='chart_month'></div>";
+    htmlString += "<div class='chart_heading'>Last 24 hrs</div>";
+    htmlString += "<div id='chart_day'></div>";
+    $("#results").html(htmlString);
+    var now = new Date();
+    var month = new Date();
+    month.setMonth(month.getMonth() - 1);
+    var day = new Date();
+    day.setDate(month.getDate() - 1);
+    renderTopDomains('chart_all', '#89d');
+    renderTopDomains('chart_month', '#9d8', true, month.getTime(), now.getTime());
+    renderTopDomains('chart_day', '#d89', true, day.getTime(), now.getTime());
 }
