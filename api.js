@@ -37,6 +37,11 @@ function visitsReady(callback) {
     visitCallbacks.push(callback);
 }
 
+var quickCallbacks = [];
+function quickVisits(callback) {
+    quickCallbacks.push(callback);
+}
+
 
 // Returns all visits that match the optional `filter'.
 // A filter object can have any of the following properties:
@@ -78,12 +83,16 @@ function getVisits(filter) {
 // of visits in each time period. If the optional `relative' is passed in,
 // instead of returning the absolute number of visits, it'll return the
 // relative amount (e.g. 5 visits/day instead of 25 visits total)
-function numVisitsByTime(visits, timeScale, relative) {
+function numVisitsByTime(visits, timeScale, relative, granularTimes) {
     var func = getTimeScaleFunc(timeScale);
 
     var numVisits = {};
     for (var i in visits) {
-        var time = new Date(visits[i].time)[func]();
+        if (!granularTimes) {
+            var time = new Date(visits[i].time)[func]();
+        } else {
+            var time = getGranularTime(new Date(visits[i].time));
+        }
         numVisits[time] = numVisits[time] || 0;
         numVisits[time]++;
     }

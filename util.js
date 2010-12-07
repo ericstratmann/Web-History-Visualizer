@@ -2,53 +2,49 @@
 
 var _visits = []
 
-allVisits(function(all) {
-    _visits = all;
-    for (var i in visitCallbacks) {
-        visitCallbacks[i]();
+allVisits(function(quick) {
+    for (var i in quickCallbacks) {
+        quickCallbacks[i](quick);
     }
-});
+}, true);
+
+setTimeout(function() {
+    allVisits(function(all) {
+        _visits = all;
+        for (var i in visitCallbacks) {
+            visitCallbacks[i]();
+        }
+    });
+}, 100);
 
 function outputVisits(visits) {
+    sortBy(visits, "time");
+    visits.reverse();
+
     visits.forEach(function(visit, id) {
         var parsed = parseUri(visit.url);
         var url = visit.url;
         var date = new Date(visit.time);
+        var maxTitleLength = 60;
 
         var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a> " + timeToStr(date);
-        var title = visit.title || "No title";
+        var title = (visit.title || "No title");
+        if (title.length > maxTitleLength) {
+            title = title.slice(0, maxTitleLength) + "...";
+        }
         var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
         var outbound = "<a href='" + visit.url + "' target='_blank' style='color:#49a'>GO</a>";
         var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
         $("#results").append(html);
 
         $("#date-" + id).click(function() {
-            $("#results").html("<div id='chart'></div>");
             renderDateView(date);
         });
         $("#visit-" + id).click(function() {
-            $("#results").html("<div id='chart'></div>");
-            renderAreaGraph('chart', parsed.host, TimeScale.DAY);
-            $("#results").append("Show all visits here");
+            renderUrlView(visit.url);
         });
         $("#domain-" + id).click(function() {
-            var d = new Date();
-            var minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-            var minTime = minDate.getTime();
-            var maxTime = minTime + 86400*1000;
-            var domains = new Array();
-            domains.push(parsed.host);
-            
-            var htmlString = '<div class="chart_title" style="margin-top:20px">Spotlight on <a href="javascript:void(0)">' + parsed.host + '<\/a><\/div>';
-            htmlString += "<div class='chart_heading'>Average Hourly Visits to " + parsed.host + "</div>";
-            htmlString += "<div id='chart'></div>";
-            htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + dateToStr(minDate);
-            htmlString += "</div><div id='pings'></div>";
-            
-            $("#results").html(htmlString);
-            
-            renderAreaGraph('chart', parsed.host, TimeScale.HOUR);
-            renderPingsGraph('pings', minTime, maxTime, domains);
+            renderDomainView(parsed.host);
         });
     });
 }
@@ -66,13 +62,44 @@ function getTimeScaleFunc(scale) {
     throw "Invalid TimeScale";
 }
 
+function getGranularTime(date, scale) {
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minutes = date.getMinutes();
+
+    var val;
+    if (scale === TimeScale.HOUR) {
+        val = hour + minutes/60;
+    } else if (scale === TimeScale.DAY) {
+        val = day + hour/24;
+    } else if (scale === TimeScale.MONTH) {
+        val = month = day/31;
+    } else if (scale === TimeScale.YEAR) {
+        val = year + month/12;
+    }
+    return roundDecimal(val, 1);
+}
+
+function roundDecimal(number, numDecimals) {
+    var pow = Math.pow(10, numDecimals);
+    return Math.round(number * pow)/pow;;
+}
+
 
 // Calls `callback' with an array of all history items
-function getHistory(callback) {
+function getHistory(callback, quick) {
+    var max = 100000;
+    var start = 0;
+    if (quick) {
+        max = 100;
+        start = new Date().getTime() - 24 * 60 * 60 * 1000;
+    }
     var query = {
         text: '',
-        maxResults: 100000,
-        startTime: 0,
+        maxResults: max,
+        startTime: start,
         endTime: new Date().getTime()
     };
     chrome.history.search(query, callback);
@@ -146,14 +173,20 @@ function sortBy(arr, field) {
 }
 
 // Calls `callback' with an array of all visits to all URLs
-function allVisits(callback) {
+function allVisits(callback, quick) {
     var visits = [];
+    var quickMin = new Date().getTime() - 24 * 60 * 60 * 1000;
     getHistory(function(historyItems) {
         var num = historyItems.length;
         historyItems.forEach(function(history) {
             var details = {url: history.url};
             chrome.history.getVisits(details, function(visitItems) {
                 for (var j in visitItems) {
+                    if (quick) {
+                        if (visitItems[j].visitTime < quickMin) {
+                            continue;
+                        }
+                    }
                     var visit = visitItems[j];
                     visits.push({
                         id: visit.id,
@@ -170,5 +203,5 @@ function allVisits(callback) {
                 }
             });
         });
-    });
+    }, quick);
 }
