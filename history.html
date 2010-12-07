@@ -22,7 +22,8 @@
       </div>
       <div class="nav" id="nav">
         <a href="javascript:void(0)" class="nav_link clickable_link" id="showHistory">Show History</a>
-        <a href="javascript:void(0)" class="nav_link clickable_link" id="pagesPerDay">Number of Pages Per Day</a>
+        <a href="javascript:void(0)" class="nav_link clickable_link" id="overviewVis">Web Browsing Overview</a>
+        <!-- <a href="javascript:void(0)" class="nav_link clickable_link" id="pagesPerDay">Number of Pages Per Day</a> -->
         <a href="javascript:void(0)" class="nav_link clickable_link" id="mostVisited">Most visited websites</a>
       </div>
       <!--
@@ -117,18 +118,27 @@
           timeScale = timeScale || TimeScale.DAY;
 
           numVisits = numVisitsByTime(visits, timeScale, relative);
-          data = pv.range(1, 32, 1).map(function(x) {
+          var data = pv.range(getTimeScaleMin(timeScale),
+                                   getTimeScaleMax(timeScale),
+                                   1).map(function(x) {
             var i = numVisits[x];
             if(i === undefined) {
               i = 0;
             }
+            
+            if(timeScale == TimeScale.HOUR) {
+              return {x: new Date(2010, 1, 1, x), y: i};
+            }
             return {x: x, y: i};
           });
           /* Sizing and scales. */
-          w = 400;
-          h = 200;
-          x = pv.Scale.linear(data, function(d) d.x).range(0, w);
-          y = pv.Scale.linear(data, function(d) d.y).range(0, h);
+          var w = 800;
+          var h = 200;
+          var x = pv.Scale.linear(data, function(d) d.x).range(0, w);
+          if(timeScale == TimeScale.HOUR) {
+            x = pv.Scale.linear(new Date(2010, 1, 1, 0), new Date(2010, 1, 1, 23)).range(0, w);
+          }
+          var y = pv.Scale.linear(data, function(d) d.y).range(0, h);
           
           /* The root panel. */
           vis = new pv.Panel()

@@ -32,6 +32,18 @@ function pagesPerDay() {
     renderNumVisitsGraph(getVisits(), 'chart');
 }
 
+// Displays the number of pages visited per day
+function overviewVis() {
+    var htmlString = "<div class='chart_title'>Web browsing overview</div>";
+    htmlString += "<div class='chart_heading'>Average Hourly Browsing</div>";
+    htmlString += "<div id='hourly_overview'></div>";
+    htmlString += "<div class='chart_heading'>Average Daily Browsing</div>";
+    htmlString += "<div id='daily_overview'></div>";
+    $("#results").html(htmlString);
+    renderNumVisitsGraph(getVisits(), 'hourly_overview', TimeScale.HOUR);
+    renderNumVisitsGraph(getVisits(), 'daily_overview', TimeScale.DAY);
+}
+
 // Displays the most visited domains
 function mostVisited() {
     $("#results").html("<div id='chart'></div>");
