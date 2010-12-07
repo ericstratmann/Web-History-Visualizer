@@ -11,9 +11,34 @@ function showHistory() {
     outputVisits(visits);
 }
 
+function renderUrlView(url) {
+    $("#results").html("");
+    $("#results").append("Coming soon!");
+}
+
+function renderDomainView(domain) {
+    var d = new Date();
+    var minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var minTime = minDate.getTime();
+    var maxTime = minTime + 86400*1000;
+    var domains = new Array();
+    domains.push(domain);
+
+    var htmlString = '<div class="chart_title" style="margin-top:20px">Spotlight on <a href="javascript:void(0)">' + domain + '<\/a><\/div>';
+    htmlString += "<div class='chart_heading'>Average Hourly Visits to " + domain + "</div>";
+    htmlString += "<div id='chart'></div>";
+    htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + dateToStr(minDate);
+    htmlString += "</div><div id='pings'></div>";
+
+    $("#results").html(htmlString);
+
+    renderAreaGraph('chart', domain, TimeScale.HOUR);
+    renderPingsGraph('pings', minTime, maxTime, domains);
+}
+
 function renderDateView(date) {
     $("#results").html("");
-    $("#results").append("<h2>Overview for " +  dateToStr(date)) + "</h2>";;
+    $("#results").append("<h2>Overview for " +  dateToStr(date)) + "</h2>";
     $("#results").append("<div id='chart'></div>");
     $("#results").append("<div>Pages you visited on this day</div>");
     var start = getDayMin(date);
