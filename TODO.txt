@@ -22,8 +22,6 @@ Finish in general (by Friday, we can do as much of this as possible):
 
 Important things todo:
 - Get domain compare to work
-- Make the bars light up when you hover over them
-- Search function (if it's easy enough)
 - Adjust day for per-website pings graph
 - Pagination of history view
 - CSS stuff
