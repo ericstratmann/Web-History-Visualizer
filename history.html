@@ -47,42 +47,39 @@
         
         td_data.pop();
         
-        /* The root panel. */
-        topDomains = new pv.Panel()
-            .width(w_bar)
-            .height(h_bar)
+        //topDomains.render();
+        var vis = new pv.Panel()
+			.def("i", -1)
+			.width(w_bar)
+			.height(h_bar)
             .bottom(20)
             .left(150)
             .right(10)
             .top(5)
             .canvas(out);
-        
-        /* The bars. */
-        var bar = topDomains.add(pv.Bar)
-            .data(td_data)
-            .top(function() y_bar(this.index))
-            .height(y_bar.range().band)
-            .left(0)
-            .fillStyle(barColor)
+		
+		var td_bar = vis.add(pv.Bar)
+			.data(td_data)
+			.bottom(0)
+			.height(y_bar.range().band)
+			.width(x_bar)
+			.top(function() y_bar(this.index))
+			.fillStyle(function() vis.i() == this.index ? "orange" : barColor)
+			.event("mouseover", function() vis.i(this.index))
+			.event("mouseout", function() vis.i(-1))
             .cursor("pointer")
-            //.event("mouseover", function() this.fillStyle("#df6"))
-            //.event("mouseout", function() this.fillStyle(barColor))
             .event("click", function() renderDomainView(sorted[this.index].key))
-            .width(x_bar);
-        
-        /* The value label. */
-        bar.anchor("left").add(pv.Label)
-            .textStyle("black")
-            .text(function(d) d.toFixed(1));
-        
-        /* The variable label. */
-        bar.anchor("left").add(pv.Label)
+		  .anchor("left").add(pv.Label)
+			.textStyle("black");
+			
+			
+        td_bar.anchor("left").add(pv.Label)
             .textMargin(5)
             .textAlign("right")
             .text(function() sorted[this.index].key);
         
-        /* X-axis ticks. */
-        topDomains.add(pv.Rule)
+        
+        vis.add(pv.Rule)
             .data(x_bar.ticks(5))
             .left(x_bar)
             .strokeStyle(function(d) d ? "rgba(255,255,255,.3)" : "#000")
@@ -92,8 +89,8 @@
             .strokeStyle("#000")
           .anchor("bottom").add(pv.Label)
             .text(x_bar.tickFormat);
-        
-        topDomains.render();
+		
+		vis.render();
       }
       
         function renderNumVisitsGraph(visits, out, timeScale, relative) {
