@@ -8,11 +8,19 @@ function showHistory(visits) {
         var filter = {minTime: new Date().getTime() - 1 * 24 * 60 * 60 * 1000}
         var visits = getVisits(filter);
     }
-    $("#results").append("<input type='text'/>");
-    $("#results").append("<input type='submit' value='Search'/><br/>");
+    $("#results").append("<input id='search-text' type='text'/>");
+    $("#results").append("<input id='search-submit' type='submit' value='Search'/><br/>");
     sortBy(visits, "time");
     visits.reverse();
     outputVisits(visits);
+
+    $("#search-submit").click(function() {
+        var text = $("#search-text").val();
+        allVisits(function(visits) {
+            $("#results").html("");;
+            showHistory(visits);
+        }, false, text);
+    });
 }
 
 function renderUrlView(url) {
