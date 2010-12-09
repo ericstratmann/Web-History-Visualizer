@@ -91,7 +91,7 @@ function numVisitsByTime(visits, timeScale, relative, granularTimes) {
         if (!granularTimes) {
             var time = new Date(visits[i].time)[func]();
         } else {
-            var time = getGranularTime(new Date(visits[i].time));
+            var time = getGranularTime(new Date(visits[i].time), timeScale);
         }
         numVisits[time] = numVisits[time] || 0;
         numVisits[time]++;
