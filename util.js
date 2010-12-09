@@ -21,7 +21,17 @@ function outputVisits(visits) {
     sortBy(visits, "time");
     visits.reverse();
 
+    var MAX_VISITS  = 100;
+    if (visits.length > MAX_VISITS) {
+        visits = visits.slice(0, MAX_VISITS);
+    }
+
+    var out = $("#results");
+    var allHtml = "";
+    var clickCallbacks = [];
+    var count = 0;
     visits.forEach(function(visit, id) {
+        count++;
         var parsed = parseUri(visit.url);
         var url = visit.url;
         var date = new Date(visit.time);
@@ -39,17 +49,26 @@ function outputVisits(visits) {
         var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
         var outbound = "<a href='" + visit.url + "' target='_blank'><img src='http://bits.wikimedia.org/skins-1.5/vector/images/external-link-ltr-icon.png' /></a>";
         var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
-        $("#results").append(html);
 
-        $("#date-" + id).click(function() {
-            renderDateView(date);
+        allHtml += html;
+        clickCallbacks.push(function() {
+            $("#date-" + id).click(function() {
+                renderDateView(date);
+            });
+            $("#visit-" + id).click(function() {
+                renderUrlView(visit.url);
+            });
+            $("#domain-" + id).click(function() {
+                renderDomainView(parsed.host);
+            });
         });
-        $("#visit-" + id).click(function() {
-            renderUrlView(visit.url);
-        });
-        $("#domain-" + id).click(function() {
-            renderDomainView(parsed.host);
-        });
+
+        if (count == visits.length) {
+            out.append(allHtml);
+            for (var i in clickCallbacks) {
+                clickCallbacks[i]();
+            }
+        }
     });
 }
 
