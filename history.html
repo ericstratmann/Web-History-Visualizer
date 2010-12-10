@@ -272,7 +272,7 @@
           totalPings = new Array();
           for(var i = 0; i < domains.length; i++) {
             //alert('domains[i]: ' + domains[i] + ", min: " + minTime + ", max: " + maxTime);
-            if(domains[i] == "") {
+            if(domains[i] == "All Visits") {
               var pingsList = getVisits({"minTime": minTime, "maxTime": maxTime});
               totalPings = totalPings.concat(pingsList);
             }

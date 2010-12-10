@@ -130,7 +130,7 @@ function overviewVis() {
     var maxTime = new Date().getTime();
     var minTime = maxTime - 24 * 60 * 60 * 1000;
     var domains = new Array();
-    domains.push("");
+    domains.push("All Visits");
     renderPingsGraph('last24_overview', minTime, maxTime, domains, true);
     renderAreaGraph('hourly_overview', false, TimeScale.HOUR, true);
     renderNumVisitsGraph(getVisits(), 'daily_overview', TimeScale.DAY, true);
