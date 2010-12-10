@@ -57,6 +57,93 @@ function renderDomainView(domain) {
     outputVisits(getVisits(filter));
 }
 
+function spotlightTemp() {
+    var domains = new Array();
+    domains.push("www.facebook.com");
+    domains.push("mail.google.com");
+    //domains.push("www.reddit.com");
+    //domains.push("www.google.com");
+    renderCompareView(domains)
+    /*
+    var domain = "www.facebook.com";
+    var domain2 = "mail.google.com";
+
+    var d = new Date();
+    var minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var minTime = minDate.getTime();
+    var maxTime = minTime + 86400*1000;
+    var domains = new Array();
+    domains.push(domain);
+    domains.push(domain2);
+
+    var filter = {domain: domain};
+    currentFilter = filter; //TODO incorporate both domains
+
+    var htmlString = '<div class="chart_title" style="margin-top:20px">Spotlight on <a href="javascript:void(0)">' + domain + '<\/a><\/div>';
+    htmlString += "<div class='chart_heading'>Average Hourly Visits to " + domain + "</div>";
+    htmlString += "<div id='chart'></div>";
+    htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + dateToStr(minDate);
+    htmlString += "</div><div id='pings'></div>";
+
+    $("#results").html(htmlString);
+
+    renderStackedAreaGraph('chart', domains, TimeScale.HOUR, true);
+    renderPingsGraph('pings', minTime, maxTime, domains);
+
+    $("#results").append("<br/>");
+    outputVisits(getVisits(filter));
+    */
+}
+
+function renderCompareView(domains) {
+    var colors = new Array();
+    colors.push('#359');
+    colors.push('#a59');
+    colors.push('#3a9');
+    colors.push('#c64');
+    colors.push('#bb4');
+    var d = new Date();
+    var minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var minTime = minDate.getTime();
+    var maxTime = minTime + 86400*1000;
+    
+    var domainString = "";
+    for(var i = 0; i < domains.length - 1; i++) {
+      domainString += domains[i] + ", ";
+    }
+    domainString += domains[domains.length - 1];
+    
+    var legend = "<div class='legend'>";
+    for(var i = 0; i < domains.length; i++) {
+      legend += "<div><div style='float:left; min-width: 140px;'>" + domains[i] + ": </div>" + "<div style='width:20px; height:20px; float: left; margin-left: 5px; background-color: " + colors[i] + "'></div></div>";
+      legend += "<div style='clear:both'></div>";
+    }
+    legend += "</div>";
+
+
+    var htmlString = '<div class="chart_title" style="margin-top:20px">Comparison of ' + domainString + '<\/div>';
+    htmlString += "<div class='chart_heading'>Average Hourly Visits to these domains</div>";
+    htmlString += "<div id='chart'></div>";
+    htmlString += legend;
+    htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + dateToStr(minDate);
+    htmlString += "</div><div id='pings'></div>";
+
+    $("#results").html(htmlString);
+
+    renderStackedAreaGraph('chart', domains, colors, TimeScale.HOUR, true);
+    renderPingsGraph('pings', minTime, maxTime, domains);
+
+    $("#results").append("<br/>");
+    
+    var allVisits = new Array();
+    
+    for(var i = 0; i < domains.length; i++) {
+      var filter = {domain: domains[i]};
+      allVisits = allVisits.concat(getVisits(filter));
+    }
+    outputVisits(allVisits);
+}
+
 function renderDateView(date, visits) {
     $("#results").html("");
     var left = "<img class='arrow' id='left' src='left-green.png' alt='Back one day'/>";
