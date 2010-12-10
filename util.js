@@ -18,6 +18,30 @@ setTimeout(function() {
 }, 100);
 
 function outputVisits(visits) {
+    $("#results").append("<input id='search-text' type='text'/>");
+    $("#results").append("<input id='search-submit' type='submit' value='Search'/><br/>");
+    $("#results").append("<div id='visits'></div>");
+
+    var submitSearch = function() {
+        var text = $("#search-text").val();
+        allVisits(function(visits) {
+            $("#visits").html("");
+            _outputVisits(getVisits(currentFilter, visits));
+        }, false, text);
+    };
+    $("#search-submit").click(submitSearch);
+    $("#search-text").keypress(function(e) {
+        if (e.keyCode === 13) {
+            submitSearch();
+        }
+    });
+
+    _outputVisits(visits);
+}
+
+
+function _outputVisits(visits) {
+
     sortBy(visits, "time");
     visits.reverse();
 
@@ -26,7 +50,6 @@ function outputVisits(visits) {
         visits = visits.slice(0, MAX_VISITS);
     }
 
-    var out = $("#results");
     var allHtml = "";
     var clickCallbacks = [];
     var count = 0;
@@ -68,7 +91,7 @@ function outputVisits(visits) {
         }
 
         if (count == visits.length) {
-            out.append(allHtml);
+            $("#visits").append(allHtml);
             for (var i in clickCallbacks) {
                 clickCallbacks[i]();
             }
