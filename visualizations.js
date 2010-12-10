@@ -94,7 +94,8 @@ function overviewVis() {
     $("#results").html(htmlString);
     var last24Filter = {minTime: new Date().getTime() - 24 * 60 * 60 * 1000};
     renderNumVisitsGraph(getVisits(last24Filter), 'last24_overview', TimeScale.HOUR, true);
-    renderNumVisitsGraph(getVisits(), 'hourly_overview', TimeScale.HOUR, true);
+    //renderNumVisitsGraph(getVisits(), 'hourly_overview', TimeScale.HOUR, true);
+    renderAreaGraph('hourly_overview', false, TimeScale.HOUR, true);
     renderNumVisitsGraph(getVisits(), 'daily_overview', TimeScale.DAY, true);
 }
 

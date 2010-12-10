@@ -14,7 +14,8 @@
   <body>
     <div id="container">
       <div class="header">
-        Browser History
+        <div class="header_title">Browser History</div>
+        <div style="clear:both"></div>
       </div>
       <div class="nav" id="nav">
         <a href="javascript:void(0)" class="nav_link clickable_link" id="showHistory">Show History</a>
@@ -181,16 +182,35 @@
             domainFilter = {"domain": domainName};
           }
         
-          var numVisits = numVisitsByTime(getVisits(domainFilter), timeScale, relative);
-          var graphData = pv.range(getTimeScaleMin(timeScale),
-                                   getTimeScaleMax(timeScale),
+          numVisits = numVisitsByTime(getVisits(domainFilter), timeScale, relative, true);
+          graphData = pv.range(getTimeScaleMin(timeScale),
+                                   getTimeScaleMax(timeScale) * 10,
                                    1).map(function(x) {
+            var xa = x + 1;
+            var xb = x - 1;
+            x /= 10;
+            xa /= 10;
+            xb /= 10;
             var i = numVisits[x];
+            var prev = numVisits[xa];
+            var next = numVisits[xb];
+            
             if(i === undefined) {
               i = 0;
             }
+            if(prev === undefined) {
+              prev = 0;
+            }
+            if(next === undefined) {
+              next = 0;
+            }
+            i += prev;
+            i += next;
+            var b = i / 3 * 10;
             if(timeScale == TimeScale.HOUR) {
-              return {x: new Date(2010, 1, 1, x), y: i};
+              var hrs = Math.floor(x);
+              var mins = Math.floor(60 * (x - hrs) + 0.0001);
+              return {x: new Date(2010, 1, 1, hrs, mins), y: b};
             }
             return {x: x, y: i};
           });
@@ -200,7 +220,7 @@
           var h = 200;
           var x = pv.Scale.linear(graphData, function(d) d.x).range(0, w);
           if(timeScale == TimeScale.HOUR) {
-            x = pv.Scale.linear(new Date(2010, 1, 1, 0), new Date(2010, 1, 1, 23)).range(0, w);
+            x = pv.Scale.linear(new Date(2010, 1, 1, 0), new Date(2010, 1, 1, 23, 54)).range(0, w);
           }
           
           var y = pv.Scale.linear(graphData, function(d) d.y).range(0, h);

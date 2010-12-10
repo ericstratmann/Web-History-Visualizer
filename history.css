@@ -19,6 +19,18 @@ a {
   margin-bottom: 10px;
 }
 
+.header_title {
+  float: left;
+  width: 500px;
+}
+
+#loading_gif {
+  font-size: 14px;
+  float: right;
+  font-weight: normal;
+  display: none;
+}
+
 .nav {
   margin-bottom: 10px;
   border-bottom: 1px solid #aaa;

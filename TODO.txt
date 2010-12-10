@@ -22,14 +22,11 @@ Finish in general (by Friday, we can do as much of this as possible):
 
 Important things todo:
 - Get domain compare to work
-- Make the bars light up when you hover over them
-- Search function (if it's easy enough)
-- Adjust day for per-website pings graph
 - Pagination of history view
+- Adjust day for per-website pings graph
 - CSS stuff
 - More granular time stuff (tenths of hours instead of just hours; use granularTimes option)
-- Add loading gif in corner or something while large views are loading
-
+- Add loading gif in corner or something while large views are loading (this doesn't quite work right for some reason)
+- Ravi: the related work section of the paper
 
 Paper TODO:
-Ravi - the related work section
