@@ -77,7 +77,7 @@ function renderCompareView(domains, minDate, scale) {
     if(domains.length <= 1) { charttitle = "Spotlight on"; }
     var htmlString = '<div class="chart_title" style="margin-top:20px">';
     htmlString += charttitle + ' ' + domainString + '<\/div>';
-    htmlString += "<div>Add another domain: <input type=text name='add_domain' id='add_domain' /><input type=submit value='add' name='add' id='add_domain_button'/></div>";
+    htmlString += "<div>Add another domain: <input type=text name='add_domain' id='add_domain' class='text_input'/><input class='submit_input' type=submit value='add' name='add' id='add_domain_button'/></div>";
     htmlString += "<div>Switch Scales: <a href='javascript:void(0)' scale='0' class='scale_link'>24 Hours</a>";
     htmlString += " | <a href='javascript:void(0)' scale='7' class='scale_link'>7 Days</a>";
     htmlString += " | <a href='javascript:void(0)' scale='30' class='scale_link'>30 Days</a>";
@@ -88,6 +88,7 @@ function renderCompareView(domains, minDate, scale) {
     htmlString += legend;
     htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + left + dateToStr(minDate) + right;
     htmlString += "</div><div id='pings'></div>";
+    htmlString += "<div class='chart_heading'>History for these domains</div>";
 
     $("#results").html(htmlString);
 

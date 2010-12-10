@@ -77,3 +77,13 @@ a:hover {
     padding-left: 1mm;
     padding-right: 1mm;
 }
+
+.text_input {
+  width: 200px;
+  height: 22px;
+  font-size: 16px;
+}
+
+.submit_input {
+  margin-left: 10px;
+}

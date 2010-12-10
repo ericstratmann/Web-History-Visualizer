@@ -18,8 +18,8 @@ setTimeout(function() {
 }, 100);
 
 function outputVisits(visits) {
-    $("#results").append("<input id='search-text' type='text'/>");
-    $("#results").append("<input id='search-submit' type='submit' value='Search'/><br/>");
+    $("#results").append("<input class='text_input' id='search-text' type='text'/>");
+    $("#results").append("<input class='submit_input' id='search-submit' type='submit' value='Search'/><br/>");
     $("#results").append("<div id='visits'></div>");
 
     var submitSearch = function() {
