@@ -37,6 +37,7 @@ function renderDomainView(domain) {
     renderCompareView(domains);
 }
 
+//todo: date
 function renderCompareView(domains) {
     var colors = new Array();
     colors.push('#359');
@@ -61,6 +62,14 @@ function renderCompareView(domains) {
       legend += "<div style='clear:both'></div>";
     }
     legend += "</div>";
+    
+    /*
+    var left = "<img class='arrow' id='left' src='left-green.png' alt='Back one day'/>";
+    var right = "<img class='arrow' id='right' src='right-green.png' alt='Back one day'/>";
+    if (date.getTime() + 24 * 60 * 60 * 1000 > new Date().getTime()) {
+        right = "";
+    }
+    */
 
     var charttitle = "Comparison of";
     if(domains.length <= 1) { charttitle = "Spotlight on"; }
@@ -75,7 +84,7 @@ function renderCompareView(domains) {
 
     $("#results").html(htmlString);
 
-    renderStackedAreaGraph('chart', domains, colors, TimeScale.HOUR, true);
+    renderLineGraph('chart', domains, colors, TimeScale.HOUR, true); //used to be stacked
     renderPingsGraph('pings', minTime, maxTime, domains);
 
     $("#results").append("<br/>");
@@ -94,6 +103,32 @@ function renderCompareView(domains) {
       domains.push($('#add_domain').val());
       renderCompareView(domains);
     });
+    
+    /*
+    $("#left").click(function() {
+        renderDateView(new Date(date.getTime() - 24 * 60 * 60 * 1000));
+    });
+
+    $("#left").mouseover(function() {
+        $("#left").attr("src", "left-blue.png");
+    });
+
+    $("#left").mouseout(function() {
+        $("#left").attr("src", "left-green.png");
+    });
+
+    $("#right").mouseover(function() {
+        $("#right").attr("src", "right-blue.png");
+    });
+
+    $("#right").mouseout(function() {
+        $("#right").attr("src", "right-green.png");
+    });
+
+    $("#right").click(function() {
+        renderDateView(new Date(date.getTime() + 24 * 60 * 60 * 1000));
+    });
+    */
 }
 
 function renderDateView(date, visits) {
@@ -166,7 +201,7 @@ function overviewVis() {
     htmlString += "<div class='chart_heading'>Last 24 hours</div>";
     htmlString += "<div id='last24_overview'></div>";
     htmlString += "<div class='chart_heading'>Average Hourly Browsing</div>";
-    htmlString += "<div id='hourly_overview'></div>";
+    htmlString += "<div id='hourly_overview' style='margin-left: 100px'></div>";
     htmlString += "<div class='chart_heading'>Average Daily Browsing</div>";
     htmlString += "<div id='daily_overview'></div>";
     $("#results").html(htmlString);
