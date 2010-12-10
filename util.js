@@ -45,7 +45,12 @@ function outputVisits(visits) {
         }
         var domain = " (<a href='#' id='domain-" + id + "'>" + parsed.host + "</a>)";
         var outbound = "<a href='" + visit.url + "' target='_blank'><img src='http://bits.wikimedia.org/skins-1.5/vector/images/external-link-ltr-icon.png' /></a>";
-        var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
+
+
+        // shamelessly stolen from google chrome history page
+        var faviconUrl = url.replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+        var favicon = "<img src='chrome://favicon/" + faviconUrl + "' alt='favicon for link' /> ";
+        var html = timeStr + " - " + favicon + "<a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
 
         if (title) {
             allHtml += html;

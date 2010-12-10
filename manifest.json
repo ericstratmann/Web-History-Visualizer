@@ -2,7 +2,8 @@
     "name": "Web History Visualizer",
     "version": "0.1",
     "permissions": [
-        "history"
+        "history",
+        "chrome://favicon/*"
     ],
     "chrome_url_overrides": {
         "history": "history.html"
