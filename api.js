@@ -62,10 +62,14 @@ function getVisits(filter, visits) {
     if (filter.url) {
         var filterUri = parseUri(filter.url);
     }
+    var filterDomain;
+    if (filter.domain) {
+        filterDomain = filter.domain.replace(/www./i, "");
+    }
     for (var i in visits) {
         var visit = visits[i];
         var uri = parseUri(visit.url);
-        if (filter.domain && uri.host !== filter.domain) {
+        if (filterDomain && uri.host.replace(/www./i, "") !== filterDomain) {
             continue;
         }
         if (filter.minTime && visit.time < filter.minTime) {
