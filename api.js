@@ -120,16 +120,22 @@ function numVisitsByURL(visits) {
 }
 
 function topDomains(visits, numDomains) {
+    awefawef = visits;
     var numVisits = {}; 
     for (var i in visits) {
         var domain = parseUri(visits[i].url).host;
         numVisits[domain] = numVisits[domain] || 0;
         numVisits[domain]++;
     }
+    if(numVisits.length < numDomains) {
+      numDomains = numVisits.length;
+    }
     var sorted = hashToArray(numVisits, true).slice(-numDomains);
     var keys = new Array();
     for(var i = 0; i < numDomains; i++) {
+      if(sorted[i] != undefined) {
       keys.push(sorted[i].key);
+      }
     }
     return keys;
 }

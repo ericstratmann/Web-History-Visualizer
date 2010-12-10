@@ -303,7 +303,7 @@
             return {x: new Date(totalPings[x].time), y: y, z: 10, w: color};
           });
           
-          var w_pin = 780,
+          var w_pin = 800,
           h_pin = (domains.length + 1) * 25,
           x_pin = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w_pin),
           y_pin = pv.Scale.linear(0, domains.length * 10 + 10).range(0, h_pin),

@@ -67,7 +67,8 @@ function renderDateView(date, visits) {
     $("#results").append("<h2>Overview for " +  left + dateToStr(date) + right + "</h2>");
 
 
-    $("#results").append("<div id='chart'></div>");
+    $("#results").append("<div id='chart' style='padding-left:100px'></div>");
+    $("#results").append("<div id='pingsChart'></div>");
     $("#results").append("<div>Pages you visited on this day</div>");
     var start = getDayMin(date);
     var end = getDayMax(date);
@@ -78,8 +79,11 @@ function renderDateView(date, visits) {
         }
         visits = getVisits(filter);
     }
-    renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
-    //renderAreaGraph('chart', false, TimeScale.HOUR, true, start, end);
+    //renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
+    renderAreaGraph('chart', false, TimeScale.HOUR, true, start, end);
+    var domains = topDomains(getVisits({minTime: start, maxTime: end}), 5);
+    domains.push("");
+    renderPingsGraph('pingsChart', start, end, domains, false);
     outputVisits(visits);
 
     $("#left").click(function() {
