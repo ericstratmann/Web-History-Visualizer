@@ -95,8 +95,8 @@ function renderCompareView(domains, minDate, scale) {
       renderLineGraph_Hour('chart', domains, colors, true); //Todo: day vs hour
     }
     else {
-      var day_maxTime = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
-      var day_minTime = day_maxTime - 86400*1000*scale;
+      day_maxTime = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
+      day_minTime = day_maxTime - 86400*1000*scale;
       renderLineGraph_Day('chart', domains, colors, day_minTime, day_maxTime);
     }
     renderPingsGraph('pings', minTime, maxTime, domains);
@@ -155,11 +155,11 @@ function renderDateView(date, visits) {
         right = "";
     }
     $("#results").append("<h2>Overview for " +  left + dateToStr(date) + right + "</h2>");
-
-
+    $("#results").append("<div class='chart_heading'>Total Hourly Visits</div>");
     $("#results").append("<div id='chart' style='padding-left:100px'></div>");
+    $("#results").append("<div class='chart_heading'>Individual Visits to Frequent Websites</div>");
     $("#results").append("<div id='pingsChart'></div>");
-    $("#results").append("<div>Pages you visited on this day</div>");
+    $("#results").append("<div class='chart_heading'>Pages you visited on this day</div>");
     var start = getDayMin(date);
     var end = getDayMax(date);
 

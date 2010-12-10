@@ -73,7 +73,7 @@ function _outputVisits(visits) {
         // shamelessly stolen from google chrome history page
         var faviconUrl = url.replace(/\(/g, "\\(").replace(/\)/g, "\\)");
         var favicon = "<img src='chrome://favicon/" + faviconUrl + "' alt='favicon for link' /> ";
-        var html = timeStr + " - " + favicon + "<a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
+        var html = "<div class='history_entry'>" + timeStr + " - " + favicon + "<a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "</div>";
 
         if (title) {
             allHtml += html;

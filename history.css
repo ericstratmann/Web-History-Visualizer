@@ -8,6 +8,10 @@ a {
   text-decoration: none;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 #container {
   margin: auto;
   width: 960px;
@@ -47,6 +51,11 @@ a {
 .nav_link:hover {
   background-color: #1144ff;
   color: #fff;
+  text-decoration:none;
+}
+
+.history_entry {
+  margin-bottom: 10px;
 }
 
 .chart_title {

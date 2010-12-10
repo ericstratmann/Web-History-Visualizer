@@ -516,8 +516,14 @@
           var maxVal = 0;
           graphData = pv.range(domains.length).map(function(q) {
             var numVisits = visits[q];
-            return pv.range(minTime, maxTime+1, scale).map(function(x) {
+            return pv.range(minTime, maxTime-scale+1, scale).map(function(x) {
               var d = new Date(x);
+              if(d.getHours() == 1) {
+                d.setHours(0);
+              }
+              else if(d.getHours() == 23) {
+                d = new Date(x + 3600*1000);
+              }
               var num = numVisits[d];
               if(!num) { num = 0; }
               if(num > maxVal) { maxVal = num; }
