@@ -174,12 +174,16 @@
         
         //END OLD CODE; begin NEW CODE
         //renders an area graph
-        function renderAreaGraph(out, domainName, timeScale, relative) {
-          $('#graph_focus').appendTo('#container');
+        function renderAreaGraph(out, domainName, timeScale, relative, minTime, maxTime) {
+          //$('#graph_focus').appendTo('#container');
 
           var domainFilter = {};
           if(domainName) {
             domainFilter = {"domain": domainName};
+          }
+          if(minTime && maxTime) {
+            domainFilter.minTime = minTime;
+            domainFilter.maxTime = maxTime;
           }
         
           numVisits = numVisitsByTime(getVisits(domainFilter), timeScale, relative, true);
@@ -271,8 +275,7 @@
           var range = maxTime - minTime;
           totalPings = new Array();
           for(var i = 0; i < domains.length; i++) {
-            //alert('domains[i]: ' + domains[i] + ", min: " + minTime + ", max: " + maxTime);
-            if(domains[i] == "All Visits") {
+            if(domains[i] == "") {
               var pingsList = getVisits({"minTime": minTime, "maxTime": maxTime});
               totalPings = totalPings.concat(pingsList);
             }
@@ -337,41 +340,41 @@
           
           pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 10)
-              .text(domains[0]);
+              .text(domains[0] == "" ? "All Visits" : domains[0]);
           if(domains.length > 1) {
             pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 20)
-              .text(domains[1]);
+              .text(domains[1] == "" ? "All Visits" : domains[1]);
           }
           if(domains.length > 2) {
             pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 30)
-              .text(domains[2]);
+              .text(domains[2] == "" ? "All Visits" : domains[2]);
           }
           if(domains.length > 3) {
             pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 40)
-              .text(domains[3]);
+              .text(domains[3] == "" ? "All Visits" : domains[3]);
           }
           if(domains.length > 4) {
             pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 50)
-              .text(domains[4]);
+              .text(domains[4] == "" ? "All Visits" : domains[4]);
           }
           if(domains.length > 5) {
             pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 60)
-              .text(domains[5]);
+              .text(domains[5] == "" ? "All Visits" : domains[5]);
           }
           if(domains.length > 6) {
             pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 70)
-              .text(domains[6]);
+              .text(domains[6] == "" ? "All Visits" : domains[6]);
           }
           if(domains.length > 7) {
             pingsVis_yAxis.add(pv.Label)
               .visible(function(d) d == 80)
-              .text(domains[7]);
+              .text(domains[7] == "" ? "All Visits" : domains[7]);
           }
           
           /* X-axis and ticks. */

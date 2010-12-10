@@ -119,6 +119,21 @@ function numVisitsByURL(visits) {
     return numVisits;
 }
 
+function topDomains(visits, numDomains) {
+    var numVisits = {}; 
+    for (var i in visits) {
+        var domain = parseUri(visits[i].url).host;
+        numVisits[domain] = numVisits[domain] || 0;
+        numVisits[domain]++;
+    }
+    var sorted = hashToArray(numVisits, true).slice(-numDomains);
+    var keys = new Array();
+    for(var i = 0; i < numDomains; i++) {
+      keys.push(sorted[i].key);
+    }
+    return keys;
+}
+
 // Returns a hash of the form {2010: 12345, ...}, showing the number of minutes
 // browsed per unit of time.
 // `visits` should NOT be filtered except possibly by time.
