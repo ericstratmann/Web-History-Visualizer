@@ -174,19 +174,21 @@
         
         //END OLD CODE; begin NEW CODE
         //renders an area graph
-        function renderAreaGraph(out, domainName, timeScale, relative, minTime, maxTime) {
-          //$('#graph_focus').appendTo('#container');
-
-          var domainFilter = {};
-          if(domainName) {
-            domainFilter = {"domain": domainName};
+        function renderAreaGraph(out, domainName, timeScale, relative, minTime, maxTime, visits) {
+          if(!visits) {
+            visits = new Array();
+            var domainFilter = {};
+            if(domainName) {
+              domainFilter = {"domain": domainName};
+            }
+            if(minTime && maxTime) {
+              domainFilter.minTime = minTime;
+              domainFilter.maxTime = maxTime;
+            }
+            visits = getVisits(domainFilter);
           }
-          if(minTime && maxTime) {
-            domainFilter.minTime = minTime;
-            domainFilter.maxTime = maxTime;
-          }
-        
-          numVisits = numVisitsByTime(getVisits(domainFilter), timeScale, relative, true);
+          
+          numVisits = numVisitsByTime(visits, timeScale, relative, true);
           graphData = pv.range(getTimeScaleMin(timeScale),
                                    getTimeScaleMax(timeScale) * 10,
                                    1).map(function(x) {
@@ -210,7 +212,10 @@
             }
             i += prev;
             i += next;
-            var b = i / 3 * 10;
+            var b = i / 3;
+            if(relative) {
+              b *= 10;
+            }
             if(timeScale == TimeScale.HOUR) {
               var hrs = Math.floor(x);
               var mins = Math.floor(60 * (x - hrs) + 0.0001);
@@ -271,17 +276,27 @@
         }
         
         //renders the timegraph
-        function renderPingsGraph(out, minTime, maxTime, domains, all) {
-          var range = maxTime - minTime;
-          totalPings = new Array();
-          for(var i = 0; i < domains.length; i++) {
-            if(domains[i] == "") {
-              var pingsList = getVisits({"minTime": minTime, "maxTime": maxTime});
-              totalPings = totalPings.concat(pingsList);
+        function renderPingsGraph(out, minTime, maxTime, domains, visits) {
+           totalPings = new Array();
+          if(!visits) {
+            var range = maxTime - minTime;
+            for(var i = 0; i < domains.length; i++) {
+              if(domains[i] == "") {
+                var pingsList = getVisits({"minTime": minTime, "maxTime": maxTime});
+                totalPings = totalPings.concat(pingsList);
+              }
+              else {
+                var pingsList = getVisits({"domain": domains[i], "minTime": minTime, "maxTime": maxTime});
+                totalPings = totalPings.concat(pingsList);
+              }
             }
-            else {
-              var pingsList = getVisits({"domain": domains[i], "minTime": minTime, "maxTime": maxTime});
-              totalPings = totalPings.concat(pingsList);
+          }
+          else {
+            for(var i = 0; i < visits.length; i++) {
+              var domain = parseUri(visits[i].url).host;
+              if($.inArray(domain, domains)) {
+               totalPings.push(visits[i]);
+              }
             }
           }
           
@@ -309,15 +324,6 @@
           y_pin = pv.Scale.linear(0, domains.length * 10 + 10).range(0, h_pin),
           c_pin = pv.Scale.linear(1, 100).range("blue", "red")
           left = 140;
-
-          if(all) {
-            w_pin = 900,
-            h_pin = (domains.length + 1) * 25,
-            x_pin = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w_pin),
-            y_pin = pv.Scale.linear(0, domains.length * 10 + 10).range(0, h_pin),
-            c_pin = pv.Scale.linear(1, 100).range("#39c", "#39c")
-            left = 0;
-          }
           
           /* The root panel. */
           var pingsVis = new pv.Panel()
@@ -420,31 +426,6 @@
           refreshPingsGraph(out, minTime, maxTime);
           $('#pings_date').html('Visits for ' + inmonth + '-' + inday + '-' + inyear);
         }
-        
-        
-        
-        
-        
-        /*
-        //BELOW METHODS FOR TESTING
-        //these pass in hard-coded domains to the generic graph methods
-        //we can make these dynamic (i.e. user input) later
-        function renderReddit() {
-          renderAreaGraph("www.reddit.com", TimeScale.DAY);
-        }
-        
-        function renderDefaultPingsGraph() {
-          var minTime = 1289900000000;
-          var maxTime = minTime + (86400 * 1000); //86400 = seconds per day
-          domainsList = new Array();
-          domainsList.push("www.reddit.com");
-          domainsList.push("mail.google.com");
-          domainsList.push("facebook.com");
-          renderPingsGraph(minTime, maxTime, domainsList);
-        }
-        */
-        
-        
         
         //INIT CODE
         quickVisits(function(visits) {

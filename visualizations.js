@@ -80,10 +80,10 @@ function renderDateView(date, visits) {
         visits = getVisits(filter);
     }
     //renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
-    renderAreaGraph('chart', false, TimeScale.HOUR, true, start, end);
-    var domains = topDomains(getVisits({minTime: start, maxTime: end}), 5);
+    renderAreaGraph('chart', false, TimeScale.HOUR, false, false, false, visits);
+    var domains = topDomains(visits, 5);
     domains.push("");
-    renderPingsGraph('pingsChart', start, end, domains, false);
+    renderPingsGraph('pingsChart', start, end, domains, visits);
     outputVisits(visits);
 
     $("#left").click(function() {

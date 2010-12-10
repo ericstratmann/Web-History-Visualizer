@@ -120,8 +120,8 @@ function getHistory(callback, quick, text) {
     var max = 100000;
     var start = 0;
     if (quick) {
-        max = 100;
-        start = new Date().getTime() - 24 * 60 * 60 * 1000;
+        max = 200;
+        start = getDayMin(new Date());
     }
     var query = {
         text: text || '',
@@ -202,7 +202,7 @@ function sortBy(arr, field) {
 // Calls `callback' with an array of all visits to all URLs
 function allVisits(callback, quick, text) {
     var visits = [];
-    var quickMin = new Date().getTime() - 24 * 60 * 60 * 1000;
+    var quickMin = getDayMin(new Date());
     getHistory(function(historyItems) {
         var num = historyItems.length;
         historyItems.forEach(function(history) {
