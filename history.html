@@ -267,13 +267,19 @@
         }
         
         //renders the timegraph
-        function renderPingsGraph(out, minTime, maxTime, domains) {
+        function renderPingsGraph(out, minTime, maxTime, domains, all) {
           var range = maxTime - minTime;
           totalPings = new Array();
           for(var i = 0; i < domains.length; i++) {
             //alert('domains[i]: ' + domains[i] + ", min: " + minTime + ", max: " + maxTime);
-            var pingsList = getVisits({"domain":domains[i], "minTime": minTime, "maxTime": maxTime});
-            totalPings = totalPings.concat(pingsList);
+            if(domains[i] == "") {
+              var pingsList = getVisits({"minTime": minTime, "maxTime": maxTime});
+              totalPings = totalPings.concat(pingsList);
+            }
+            else {
+              var pingsList = getVisits({"domain": domains[i], "minTime": minTime, "maxTime": maxTime});
+              totalPings = totalPings.concat(pingsList);
+            }
           }
           
           var colorScale = Math.floor(98 / (domains.length - 1));
@@ -298,14 +304,24 @@
           h_pin = (domains.length + 1) * 25,
           x_pin = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w_pin),
           y_pin = pv.Scale.linear(0, domains.length * 10 + 10).range(0, h_pin),
-          c_pin = pv.Scale.linear(1, 100).range("blue", "red");
+          c_pin = pv.Scale.linear(1, 100).range("blue", "red")
+          left = 140;
 
+          if(all) {
+            w_pin = 900,
+            h_pin = (domains.length + 1) * 25,
+            x_pin = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w_pin),
+            y_pin = pv.Scale.linear(0, domains.length * 10 + 10).range(0, h_pin),
+            c_pin = pv.Scale.linear(1, 100).range("#39c", "#39c")
+            left = 0;
+          }
+          
           /* The root panel. */
           var pingsVis = new pv.Panel()
               .width(w_pin)
               .height(h_pin)
               .bottom(20)
-              .left(140)
+              .left(left)
               .right(10)
               .top(5)
               .canvas(out);

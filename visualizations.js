@@ -116,9 +116,14 @@ function overviewVis() {
     htmlString += "<div class='chart_heading'>Average Daily Browsing</div>";
     htmlString += "<div id='daily_overview'></div>";
     $("#results").html(htmlString);
-    var last24Filter = {minTime: new Date().getTime() - 24 * 60 * 60 * 1000};
-    renderNumVisitsGraph(getVisits(last24Filter), 'last24_overview', TimeScale.HOUR, true);
+    //var last24Filter = {minTime: new Date().getTime() - 24 * 60 * 60 * 1000};
+    //renderNumVisitsGraph(getVisits(last24Filter), 'last24_overview', TimeScale.HOUR, true);
     //renderNumVisitsGraph(getVisits(), 'hourly_overview', TimeScale.HOUR, true);
+    var maxTime = new Date().getTime();
+    var minTime = maxTime - 24 * 60 * 60 * 1000;
+    var domains = new Array();
+    domains.push("");
+    renderPingsGraph('last24_overview', minTime, maxTime, domains, true);
     renderAreaGraph('hourly_overview', false, TimeScale.HOUR, true);
     renderNumVisitsGraph(getVisits(), 'daily_overview', TimeScale.DAY, true);
 }
