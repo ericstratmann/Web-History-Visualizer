@@ -51,16 +51,19 @@ function quickVisits(callback) {
 //   url: string
 //   category: string (not implemented)
 //   visitId: string (not implemented)
-function getVisits(filter) {
+function getVisits(filter, visits) {
     filter = filter || {}
     var filteredVisits = [];
 
+    if (!visits) {
+        visits = _visits;
+    }
 
     if (filter.url) {
         var filterUri = parseUri(filter.url);
     }
-    for (var i in _visits) {
-        var visit = _visits[i];
+    for (var i in visits) {
+        var visit = visits[i];
         var uri = parseUri(visit.url);
         if (filter.domain && uri.host !== filter.domain) {
             continue;

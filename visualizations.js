@@ -2,31 +2,28 @@
 // page. Each function should be named the same as the id of the HTML element
 // in history.html that links to the visualization, e.g. showHistory
 
+
+var currentFilter = {};
+
 // Shows a list of all visited websites
 function showHistory(visits) {
     if (!visits) {
         var filter = {minTime: new Date().getTime() - 1 * 24 * 60 * 60 * 1000}
         var visits = getVisits(filter);
     }
-    $("#results").append("<input id='search-text' type='text'/>");
-    $("#results").append("<input id='search-submit' type='submit' value='Search'/><br/>");
+
+    currentFilter = {};
     sortBy(visits, "time");
     visits.reverse();
     outputVisits(visits);
 
-    $("#search-submit").click(function() {
-        var text = $("#search-text").val();
-        allVisits(function(visits) {
-            $("#results").html("");;
-            showHistory(visits);
-        }, false, text);
-    });
 }
 
 function renderUrlView(url) {
     $("#results").html("");
 
     var filter = {url: url};
+    currentFilter = filter;
     var visits = getVisits(filter);
     $("#results").append("<h2>" + url + "</h2>");
     $("#results").append("<div>You've visited this url " + visits.length + " times</div>");
@@ -42,6 +39,9 @@ function renderDomainView(domain) {
     var domains = new Array();
     domains.push(domain);
 
+    var filter = {domain: domain};
+    currentFilter = filter;
+
     var htmlString = '<div class="chart_title" style="margin-top:20px">Spotlight on <a href="javascript:void(0)">' + domain + '<\/a><\/div>';
     htmlString += "<div class='chart_heading'>Average Hourly Visits to " + domain + "</div>";
     htmlString += "<div id='chart'></div>";
@@ -54,7 +54,7 @@ function renderDomainView(domain) {
     renderPingsGraph('pings', minTime, maxTime, domains);
 
     $("#results").append("<br/>");
-    outputVisits(getVisits({domain: domain}));
+    outputVisits(getVisits(filter));
 }
 
 function renderDateView(date, visits) {
@@ -71,11 +71,14 @@ function renderDateView(date, visits) {
     $("#results").append("<div>Pages you visited on this day</div>");
     var start = getDayMin(date);
     var end = getDayMax(date);
+
+    var filter = {
+        minTime: start,
+        maxTime: end
+    }
+    currentFilter = filter;
+
     if (!visits) {
-        var filter = {
-            minTime: start,
-            maxTime: end
-        }
         visits = getVisits(filter);
     }
     renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
