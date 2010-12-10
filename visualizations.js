@@ -81,7 +81,10 @@ function renderCompareView(domains, minDate, scale) {
     if (minDate.getTime() + 24 * 60 * 60 * 1000 > new Date().getTime()) {
         right = "";
     }
-
+    var line_graph_title = "Average Hourly Visits to these domains";
+    if(scale > 1) {
+      line_graph_title = "Total Daily Visits to these domains";
+    }
     var charttitle = "Comparison of";
     if(domains.length <= 1) { charttitle = "Spotlight on"; }
     var htmlString = '<div class="chart_title" style="margin-top:20px">';
@@ -92,13 +95,13 @@ function renderCompareView(domains, minDate, scale) {
     htmlString += " | <a href='javascript:void(0)' scale='30' class='scale_link'>30 Days</a>";
     htmlString += " | <a href='javascript:void(0)' scale='90' class='scale_link'>90 Days</a>";
     htmlString += " | <a href='javascript:void(0)' scale='365' class='scale_link'>365 Days</a></div>";
-    htmlString += "<div class='chart_heading' id='line_graph_title'>Average Hourly Visits to these domains</div>";
+    htmlString += "<div class='chart_heading' id='line_graph_title'>" + line_graph_title + "</div>";
     htmlString += "<div id='chart' style='margin-left: 100px'></div>";
     htmlString += legend;
     htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + left + dateToStr(minDate) + right;
     htmlString += "</div><div id='pings'></div>";
     htmlString += "<div class='chart_heading'>History for these domains</div>";
-
+    
     $("#results").html(htmlString);
 
     if(!scale || scale == 0 || scale == 1) {
@@ -136,9 +139,6 @@ function renderCompareView(domains, minDate, scale) {
     $(".scale_link").click(function() {
       var s = $(this).attr('scale');
       renderCompareView(domains, minDate, s);
-      if(s > 1) {
-        $('#line_graph_title').html('Total Daily Visits to these domains');
-      }
     });
     
     $("#left").click(function() {
