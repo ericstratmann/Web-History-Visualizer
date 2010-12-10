@@ -39,9 +39,6 @@ function outputVisits(visits) {
 
         var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a> " + timeToStr(date);
         var title = visit.title;
-        if (!title) {
-            return;
-        }
 
         if (title.length > maxTitleLength) {
             title = title.slice(0, maxTitleLength) + "...";
@@ -50,18 +47,20 @@ function outputVisits(visits) {
         var outbound = "<a href='" + visit.url + "' target='_blank'><img src='http://bits.wikimedia.org/skins-1.5/vector/images/external-link-ltr-icon.png' /></a>";
         var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
 
-        allHtml += html;
-        clickCallbacks.push(function() {
-            $("#date-" + id).click(function() {
-                renderDateView(date);
+        if (title) {
+            allHtml += html;
+            clickCallbacks.push(function() {
+                $("#date-" + id).click(function() {
+                    renderDateView(date);
+                });
+                $("#visit-" + id).click(function() {
+                    renderUrlView(visit.url);
+                });
+                $("#domain-" + id).click(function() {
+                    renderDomainView(parsed.host);
+                });
             });
-            $("#visit-" + id).click(function() {
-                renderUrlView(visit.url);
-            });
-            $("#domain-" + id).click(function() {
-                renderDomainView(parsed.host);
-            });
-        });
+        }
 
         if (count == visits.length) {
             out.append(allHtml);
@@ -112,7 +111,7 @@ function roundDecimal(number, numDecimals) {
 
 
 // Calls `callback' with an array of all history items
-function getHistory(callback, quick) {
+function getHistory(callback, quick, text) {
     var max = 100000;
     var start = 0;
     if (quick) {
@@ -120,7 +119,7 @@ function getHistory(callback, quick) {
         start = new Date().getTime() - 24 * 60 * 60 * 1000;
     }
     var query = {
-        text: '',
+        text: text || '',
         maxResults: max,
         startTime: start,
         endTime: new Date().getTime()
@@ -196,7 +195,7 @@ function sortBy(arr, field) {
 }
 
 // Calls `callback' with an array of all visits to all URLs
-function allVisits(callback, quick) {
+function allVisits(callback, quick, text) {
     var visits = [];
     var quickMin = new Date().getTime() - 24 * 60 * 60 * 1000;
     getHistory(function(historyItems) {
@@ -226,5 +225,5 @@ function allVisits(callback, quick) {
                 }
             });
         });
-    }, quick);
+    }, quick, text);
 }

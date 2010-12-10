@@ -8,11 +8,19 @@ function showHistory(visits) {
         var filter = {minTime: new Date().getTime() - 1 * 24 * 60 * 60 * 1000}
         var visits = getVisits(filter);
     }
-    $("#results").append("<input type='text'/>");
-    $("#results").append("<input type='submit' value='Search'/><br/>");
+    $("#results").append("<input id='search-text' type='text'/>");
+    $("#results").append("<input id='search-submit' type='submit' value='Search'/><br/>");
     sortBy(visits, "time");
     visits.reverse();
     outputVisits(visits);
+
+    $("#search-submit").click(function() {
+        var text = $("#search-text").val();
+        allVisits(function(visits) {
+            $("#results").html("");;
+            showHistory(visits);
+        }, false, text);
+    });
 }
 
 function renderUrlView(url) {
@@ -51,8 +59,8 @@ function renderDomainView(domain) {
 
 function renderDateView(date) {
     $("#results").html("");
-    var left = "<img class='arrow' id='left' src='left.png' alt='Back one day'/>";
-    var right = "<img class='arrow' id='right' src='right.png' alt='Back one day'/>";
+    var left = "<img class='arrow' id='left' src='left-green.png' alt='Back one day'/>";
+    var right = "<img class='arrow' id='right' src='right-green.png' alt='Back one day'/>";
     $("#results").append("<h2>Overview for " +  left + dateToStr(date) + right + "</h2>");
     $("#results").append("<div id='chart'></div>");
     $("#results").append("<div>Pages you visited on this day</div>");
@@ -68,6 +76,22 @@ function renderDateView(date) {
 
     $("#left").click(function() {
         renderDateView(new Date(date.getTime() - 24 * 60 * 60 * 1000));
+    });
+
+    $("#left").mouseover(function() {
+        $("#left").attr("src", "left-blue.png");
+    });
+
+    $("#left").mouseout(function() {
+        $("#left").attr("src", "left-green.png");
+    });
+
+    $("#right").mouseover(function() {
+        $("#right").attr("src", "right-blue.png");
+    });
+
+    $("#right").mouseout(function() {
+        $("#right").attr("src", "right-green.png");
     });
 
     $("#right").click(function() {

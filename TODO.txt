@@ -28,5 +28,3 @@ Important things todo:
 - More granular time stuff (tenths of hours instead of just hours; use granularTimes option)
 - Add loading gif in corner or something while large views are loading (this doesn't quite work right for some reason)
 - Ravi: the related work section of the paper
-
-Paper TODO:
