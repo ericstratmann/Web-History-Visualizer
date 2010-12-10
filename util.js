@@ -39,9 +39,6 @@ function outputVisits(visits) {
 
         var timeStr = "<a href='#' id='date-" + id + "'>" + dateToStr(date) +  "</a> " + timeToStr(date);
         var title = visit.title;
-        if (!title) {
-            return;
-        }
 
         if (title.length > maxTitleLength) {
             title = title.slice(0, maxTitleLength) + "...";
@@ -50,18 +47,20 @@ function outputVisits(visits) {
         var outbound = "<a href='" + visit.url + "' target='_blank'><img src='http://bits.wikimedia.org/skins-1.5/vector/images/external-link-ltr-icon.png' /></a>";
         var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
 
-        allHtml += html;
-        clickCallbacks.push(function() {
-            $("#date-" + id).click(function() {
-                renderDateView(date);
+        if (!title) {
+            allHtml += html;
+            clickCallbacks.push(function() {
+                $("#date-" + id).click(function() {
+                    renderDateView(date);
+                });
+                $("#visit-" + id).click(function() {
+                    renderUrlView(visit.url);
+                });
+                $("#domain-" + id).click(function() {
+                    renderDomainView(parsed.host);
+                });
             });
-            $("#visit-" + id).click(function() {
-                renderUrlView(visit.url);
-            });
-            $("#domain-" + id).click(function() {
-                renderDomainView(parsed.host);
-            });
-        });
+        }
 
         if (count == visits.length) {
             out.append(allHtml);
