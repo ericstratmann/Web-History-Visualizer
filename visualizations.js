@@ -7,11 +7,12 @@ var currentFilter = {};
 
 // Shows a list of all visited websites
 function showHistory(visits) {
+    $("#sidebar_info").html("");
     if (!visits) {
         var filter = {minTime: new Date().getTime() - 1 * 24 * 60 * 60 * 1000}
         var visits = getVisits(filter);
     }
-
+    $("#results").html("<h2>Your Browsing History</h2>");
     currentFilter = {};
     sortBy(visits, "time");
     visits.reverse();
@@ -39,6 +40,7 @@ function renderDomainView(domain) {
 
 //todo: date
 function renderCompareView(domains, minDate, scale) {
+    $("#sidebar_info").html("");
     if(!scale) { scale = 0; }
     var colors = new Array();
     colors.push('#359');
@@ -46,6 +48,13 @@ function renderCompareView(domains, minDate, scale) {
     colors.push('#3a9');
     colors.push('#c64');
     colors.push('#bb4');
+    
+    colors.push('#6a7056');
+    //colors.push('#fdef9d');
+    colors.push('#9ecc8c');
+    colors.push('#2b937f');
+    colors.push('#073d5f');
+    
     var d = new Date();
     if(!minDate) {
       minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -77,7 +86,7 @@ function renderCompareView(domains, minDate, scale) {
     if(domains.length <= 1) { charttitle = "Spotlight on"; }
     var htmlString = '<div class="chart_title" style="margin-top:20px">';
     htmlString += charttitle + ' ' + domainString + '<\/div>';
-    htmlString += "<div>Add another domain: <input type=text name='add_domain' id='add_domain' class='text_input'/><input class='submit_input' type=submit value='add' name='add' id='add_domain_button'/></div>";
+    htmlString += "<div>Add another domain: <form id='add_domain_form'><input type=text name='add_domain' id='add_domain' class='text_input'/><input class='submit_input' type=submit value='add' name='add' id='add_domain_button'/></form></div>";
     htmlString += "<div>Switch Scales: <a href='javascript:void(0)' scale='0' class='scale_link'>24 Hours</a>";
     htmlString += " | <a href='javascript:void(0)' scale='7' class='scale_link'>7 Days</a>";
     htmlString += " | <a href='javascript:void(0)' scale='30' class='scale_link'>30 Days</a>";
@@ -113,9 +122,15 @@ function renderCompareView(domains, minDate, scale) {
     //TODO: currentFilter only supports one domain at a time
     outputVisits(allVisits);
     
-    $("#add_domain_button").click(function() {
+    var sidebarString = "<div class='sidebar_heading'>" + charttitle + ' ' + domainString + "</div>";
+    sidebarString += "<div class='sidebar_stat'>Total pages visited: " + allVisits.length + "</div>";
+    $("#sidebar_info").html(sidebarString);
+    
+    $("#add_domain_form").submit(function() {
+      $('#sidebar_loading').show();
       domains.push($('#add_domain').val());
       renderCompareView(domains, minDate, scale);
+      return false;
     });
     
     $(".scale_link").click(function() {
@@ -149,10 +164,12 @@ function renderCompareView(domains, minDate, scale) {
     $("#right").click(function() {
         renderCompareView(domains, new Date(minDate.getTime() + 24 * 60 * 60 * 1000), scale);
     });
+    $('#sidebar_loading').hide();
 }
 
 function renderDateView(date, visits) {
     $("#results").html("");
+    $("#sidebar_info").html("");
     var left = "<img class='arrow' id='left' src='left-green.png' alt='Back one day'/>";
     var right = "<img class='arrow' id='right' src='right-green.png' alt='Back one day'/>";
     if (date.getTime() + 24 * 60 * 60 * 1000 > new Date().getTime()) {
@@ -164,6 +181,8 @@ function renderDateView(date, visits) {
     $("#results").append("<div class='chart_heading'>Individual Visits to Frequent Websites</div>");
     $("#results").append("<div id='pingsChart'></div>");
     $("#results").append("<div class='chart_heading'>Pages you visited on this day</div>");
+    
+    
     var start = getDayMin(date);
     var end = getDayMax(date);
 
@@ -176,12 +195,22 @@ function renderDateView(date, visits) {
     if (!visits) {
         visits = getVisits(filter);
     }
+    var sidebarString = "<div class='sidebar_heading'>Overview for " + dateToStr(date) + "</div>";
+    sidebarString += "<div class='sidebar_stat'>Total pages visited: " + visits.length + "</div>";
     //renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
     renderAreaGraph('chart', false, TimeScale.HOUR, false, false, false, visits);
     var domains = topDomains(visits, 5);
+    
+    sidebarString += "<div class='sidebar_stat'>Top domains:</div>";
+    for(var i = domains.length - 1; i >= 0; i--) {
+      sidebarString += "<div class='sidebar_substat'><a href='javascript:void(0)'>" + domains[i] + "</a></div>";
+    }
+    
     domains.push("");
     renderPingsGraph('pingsChart', start, end, domains, visits);
     outputVisits(visits);
+    
+    $("#sidebar_info").html(sidebarString);
 
     $("#left").click(function() {
         renderDateView(new Date(date.getTime() - 24 * 60 * 60 * 1000));
@@ -217,6 +246,7 @@ function pagesPerDay() {
 
 // Displays the number of pages visited per day
 function overviewVis() {
+    $("#sidebar_info").html("");
     var htmlString = "<div class='chart_title'>Web browsing overview</div>";
     htmlString += "<div class='chart_heading'>Last 24 hours</div>";
     htmlString += "<div id='last24_overview'></div>";
@@ -239,6 +269,7 @@ function overviewVis() {
 
 // Displays the most visited domains
 function mostVisited() {
+    $("#sidebar_info").html("");
     var htmlString = "<div class='chart_title'>Most Visited Domains</div>";
     htmlString += "<div class='chart_heading'>All Time</div>";
     htmlString += "<div id='chart_all'></div>";

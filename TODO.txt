@@ -27,3 +27,8 @@ Important things todo:
 - Pagination of history view/figure out if we can just display everything for a given domain (or is that too much?)
 - Get time scales to line up on the overview page
 - Add loading gif in corner or something while large views are loading (this doesn't quite work right for some reason)
+
+
+Possible future features (not right now, but eventually)
+- Focus/context graphs: http://vis.stanford.edu/protovis/ex/zoom.html
+- 

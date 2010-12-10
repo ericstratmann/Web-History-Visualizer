@@ -12,17 +12,35 @@
     </style>
   </head>
   <body>
-    <div id="container">
+    <div id="wrapper">
+    <div id="sidebar">
       <div class="header">
         <div class="header_title">Browser History</div>
         <div style="clear:both"></div>
       </div>
-      <div class="nav" id="nav">
-        <a href="javascript:void(0)" class="nav_link clickable_link" id="showHistory">Show History</a>
-        <a href="javascript:void(0)" class="nav_link clickable_link" id="overviewVis">Web Browsing Overview</a>
-        <a href="javascript:void(0)" class="nav_link clickable_link" id="mostVisited">Most visited websites</a>
+      <div id="sidebar_loading" style="display:none">
+        <img src="loading2.gif" />
       </div>
+      <div class="nav" id="nav">
+        <div class="nav_container"><a href="javascript:void(0)" class="nav_link clickable_link" id="showHistory">Show History</a></div>
+        <div class="nav_container"><a href="javascript:void(0)" class="nav_link clickable_link" id="overviewVis">Web Browsing Overview</a></div>
+        <div class="nav_container"><a href="javascript:void(0)" class="nav_link clickable_link" id="mostVisited">Most visited websites</a></div>
+      </div>
+      <div class="sidebar_search">
+        <form id="focus_form">Enter a domain: <input type=text id="focus_input" name="focus_input" />
+        <input type="submit" name="Focus" value="Focus" id="focus_submit"/></form>
+      </div>
+      <div id="sidebar_info"></div>
+    </div>
+    <div id="container">
       <script type="text/javascript+protovis">
+      
+      $('#focus_form').submit(function() {
+        var domainName = $('#focus_input').val();
+        $('#focus_input').val('');
+        renderDomainView(domainName);
+        return false;
+      });
       
       function renderTopDomains(out, barColor, isBounded, minTime, maxTime) {
         var numDomainsToShow = 8;
@@ -793,6 +811,8 @@
       </script>
       <div id="results">
       </div>
+    </div>
+    <div style="clear:both"></div>
     </div>
   </body>
 </html>
