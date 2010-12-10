@@ -32,67 +32,9 @@ function renderUrlView(url) {
 }
 
 function renderDomainView(domain) {
-    var d = new Date();
-    var minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-    var minTime = minDate.getTime();
-    var maxTime = minTime + 86400*1000;
     var domains = new Array();
     domains.push(domain);
-
-    var filter = {domain: domain};
-    currentFilter = filter;
-
-    var htmlString = '<div class="chart_title" style="margin-top:20px">Spotlight on <a href="javascript:void(0)">' + domain + '<\/a><\/div>';
-    htmlString += "<div class='chart_heading'>Average Hourly Visits to " + domain + "</div>";
-    htmlString += "<div id='chart'></div>";
-    htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + dateToStr(minDate);
-    htmlString += "</div><div id='pings'></div>";
-
-    $("#results").html(htmlString);
-
-    renderAreaGraph('chart', domain, TimeScale.HOUR, true);
-    renderPingsGraph('pings', minTime, maxTime, domains);
-
-    $("#results").append("<br/>");
-    outputVisits(getVisits(filter));
-}
-
-function spotlightTemp() {
-    var domains = new Array();
-    domains.push("www.facebook.com");
-    domains.push("mail.google.com");
-    //domains.push("www.reddit.com");
-    //domains.push("www.google.com");
-    renderCompareView(domains)
-    /*
-    var domain = "www.facebook.com";
-    var domain2 = "mail.google.com";
-
-    var d = new Date();
-    var minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-    var minTime = minDate.getTime();
-    var maxTime = minTime + 86400*1000;
-    var domains = new Array();
-    domains.push(domain);
-    domains.push(domain2);
-
-    var filter = {domain: domain};
-    currentFilter = filter; //TODO incorporate both domains
-
-    var htmlString = '<div class="chart_title" style="margin-top:20px">Spotlight on <a href="javascript:void(0)">' + domain + '<\/a><\/div>';
-    htmlString += "<div class='chart_heading'>Average Hourly Visits to " + domain + "</div>";
-    htmlString += "<div id='chart'></div>";
-    htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + dateToStr(minDate);
-    htmlString += "</div><div id='pings'></div>";
-
-    $("#results").html(htmlString);
-
-    renderStackedAreaGraph('chart', domains, TimeScale.HOUR, true);
-    renderPingsGraph('pings', minTime, maxTime, domains);
-
-    $("#results").append("<br/>");
-    outputVisits(getVisits(filter));
-    */
+    renderCompareView(domains);
 }
 
 function renderCompareView(domains) {
@@ -120,8 +62,11 @@ function renderCompareView(domains) {
     }
     legend += "</div>";
 
-
-    var htmlString = '<div class="chart_title" style="margin-top:20px">Comparison of ' + domainString + '<\/div>';
+    var charttitle = "Comparison of";
+    if(domains.length <= 1) { charttitle = "Spotlight on"; }
+    var htmlString = '<div class="chart_title" style="margin-top:20px">';
+    htmlString += charttitle + ' ' + domainString + '<\/div>';
+    htmlString += "<div>Add another domain: <input type=text name='add_domain' id='add_domain' /><input type=submit value='add' name='add' id='add_domain_button'/></div>";
     htmlString += "<div class='chart_heading'>Average Hourly Visits to these domains</div>";
     htmlString += "<div id='chart'></div>";
     htmlString += legend;
@@ -141,7 +86,14 @@ function renderCompareView(domains) {
       var filter = {domain: domains[i]};
       allVisits = allVisits.concat(getVisits(filter));
     }
+    //TODO: currentFilter only supports one domain at a time
     outputVisits(allVisits);
+    
+    $("#add_domain_button").click(function() {
+      //alert($('#add_domain').val());
+      domains.push($('#add_domain').val());
+      renderCompareView(domains);
+    });
 }
 
 function renderDateView(date, visits) {
