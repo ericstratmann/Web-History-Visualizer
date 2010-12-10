@@ -50,7 +50,9 @@ a {
 }
 
 .arrow {
-    height: 20px;
+    height: 18px;
     position: relative;
     top: 3px;
+    padding-left: 1mm;
+    padding-right: 1mm;
 }
