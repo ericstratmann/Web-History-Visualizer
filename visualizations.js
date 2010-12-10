@@ -78,7 +78,11 @@ function renderCompareView(domains, minDate, scale) {
     var htmlString = '<div class="chart_title" style="margin-top:20px">';
     htmlString += charttitle + ' ' + domainString + '<\/div>';
     htmlString += "<div>Add another domain: <input type=text name='add_domain' id='add_domain' /><input type=submit value='add' name='add' id='add_domain_button'/></div>";
-    htmlString += "<div>Switch Scales: <a href='javascript:void(0)' scale='0' class='scale_link'>24 Hours</a> | <a href='javascript:void(0)' scale='7' class='scale_link'>7 Days</a> | <a href='javascript:void(0)' scale='30' class='scale_link'>30 Days</a></div>";
+    htmlString += "<div>Switch Scales: <a href='javascript:void(0)' scale='0' class='scale_link'>24 Hours</a>";
+    htmlString += " | <a href='javascript:void(0)' scale='7' class='scale_link'>7 Days</a>";
+    htmlString += " | <a href='javascript:void(0)' scale='30' class='scale_link'>30 Days</a>";
+    htmlString += " | <a href='javascript:void(0)' scale='90' class='scale_link'>90 Days</a>";
+    htmlString += " | <a href='javascript:void(0)' scale='365' class='scale_link'>365 Days</a></div>";
     htmlString += "<div class='chart_heading'>Average Hourly Visits to these domains</div>";
     htmlString += "<div id='chart' style='margin-left: 100px'></div>";
     htmlString += legend;
@@ -92,7 +96,7 @@ function renderCompareView(domains, minDate, scale) {
     }
     else {
       var day_maxTime = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
-      var day_minTime = maxTime - 86400*1000*scale;
+      var day_minTime = day_maxTime - 86400*1000*scale;
       renderLineGraph_Day('chart', domains, colors, day_minTime, day_maxTime);
     }
     renderPingsGraph('pings', minTime, maxTime, domains);

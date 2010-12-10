@@ -21,11 +21,9 @@ Finish in general (by Friday, we can do as much of this as possible):
 - Allow for changing timescale on most visited website (i.e. what are the most visited websites this month?)
 
 Important things todo:
-- Pagination of history view
-- Adjust day for per-website pings graph
 - CSS stuff
 - More granular time stuff (tenths of hours instead of just hours; use granularTimes option)
-- Add loading gif in corner or something while large views are loading (this doesn't quite work right for some reason)
 - Ravi: the related work section of the paper, also look over and add to rest of paper
+- Pagination of history view/figure out if we can just display everything for a given domain (or is that too much?)
 - Get time scales to line up on the overview page
-- Figure out a better way to represent stacked area chart
+- Add loading gif in corner or something while large views are loading (this doesn't quite work right for some reason)
