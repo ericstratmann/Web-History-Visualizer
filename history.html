@@ -444,7 +444,9 @@
         
         
         //INIT CODE
-        quickVisits(showHistory);
+        quickVisits(function(visits) {
+            renderDateView(new Date(), visits);
+        });
         
         function updateNumVisitsData(begin, end) {
           data = pv.range(begin, end, 1).map(function(x) {
