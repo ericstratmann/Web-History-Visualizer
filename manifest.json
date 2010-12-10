@@ -1,11 +1,17 @@
 {
-    "name": "Web History Visualizer",
+    "name": "DINOSPHERE",
     "version": "0.1",
+	"description": "DINOSPHERE is a replacement for your history page",
     "permissions": [
         "history",
         "chrome://favicon/*"
     ],
     "chrome_url_overrides": {
         "history": "history.html"
-    }
+    },
+	"icons": {
+		"16": "icon-16.png",
+		"48": "icon-48.png",
+		"128": "icon-128.png"
+	}
 }
