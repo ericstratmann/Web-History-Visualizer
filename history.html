@@ -385,7 +385,7 @@
         }
         
         //renders an area graph
-        function renderLineGraph(out, domains, colors, timeScale, relative, minTime, maxTime) {
+        function renderLineGraph_Hour(out, domains, colors, relative, minTime, maxTime) {
           var visits = new Array();
           for(var i = 0; i < domains.length; i++) {
             var domainFilter = {};
@@ -395,15 +395,15 @@
               domainFilter.maxTime = maxTime;
             }
             var tempArray = getVisits(domainFilter);
-            var numVisits = numVisitsByTime(tempArray, timeScale, relative, true);
+            var numVisits = numVisitsByTime(tempArray, TimeScale.HOUR, relative, true);
             visits.push(numVisits);
           }
           
           var maxVal = 0;
           var graphData = pv.range(domains.length).map(function(q) {
             var numVisits = visits[q];
-            return pv.range(getTimeScaleMin(timeScale),
-                                   getTimeScaleMax(timeScale) * 10,
+            return pv.range(getTimeScaleMin(TimeScale.HOUR),
+                                   getTimeScaleMax(TimeScale.HOUR) * 10,
                                    1).map(function(x) {
               var xa = x + 1;
               var xb = x - 1;
@@ -432,25 +432,104 @@
               if(b > maxVal) {
                 maxVal = b;
               }
-              if(timeScale == TimeScale.HOUR) {
-                var hrs = Math.floor(x);
-                var mins = Math.floor(60 * (x - hrs) + 0.0001);
-                return {x: new Date(2010, 1, 1, hrs, mins), y: b};
-              }
-              return 0; //TODO for non hour stuff
+              var hrs = Math.floor(x);
+              var mins = Math.floor(60 * (x - hrs) + 0.0001);
+              return {x: new Date(2010, 1, 1, hrs, mins), y: b};
             });
           });
           
           /* Sizing and scales. */
           var w = 800;
           var h = 200;
-          //var x = pv.Scale.linear(graphData, function(d) d.x).range(0, w);
-          //if(timeScale == TimeScale.HOUR) {
-            var x = pv.Scale.linear(new Date(2010, 1, 1, 0), new Date(2010, 1, 1, 23, 54)).range(0, w);
-          //}
+          var x = pv.Scale.linear(new Date(2010, 1, 1, 0), new Date(2010, 1, 1, 23, 54)).range(0, w);
           
           var y = pv.Scale.linear(0, maxVal * 1.1).range(0, h);
           //var colorScale = pv.Scale.linear(1, 100).range("#59d", "#9d5")
+          
+          // root panel
+          var areaVis = new pv.Panel()
+            .width(w)
+            .height(h)
+            .bottom(20)
+            .left(40)
+            .right(10)
+            .top(5)
+            .canvas(out);
+          
+          
+          // Y-axis and ticks
+          areaVis.add(pv.Rule)
+            .data(y.ticks(10))
+            .bottom(y)
+            .strokeStyle(function(d) d ? "#ccc" : "#000")
+            .anchor("left").add(pv.Label)
+            .text(y.tickFormat);
+          
+          // X-axis and ticks
+          areaVis.add(pv.Rule)
+            .data(x.ticks(10))
+            .left(x)
+            .bottom(-5)
+            .height(5)
+            .anchor("bottom").add(pv.Label)
+            .text(x.tickFormat);
+          
+          
+          // The area with top line.
+          /*
+          areaVis.add(pv.Layout.Stack)
+            .layers(graphData)
+            .x(function(d) x(d.x))
+            .y(function(d) y(d.y))
+          .layer.add(pv.Area)
+            .fillStyle(function(d) d.c);
+            */
+          for(var i = 0; i < graphData.length; i++) {
+            areaVis.add(pv.Line)
+              .data(graphData[i])
+              .left(function(d) x(d.x))
+              .bottom(function(d) y(d.y))
+              .lineWidth(2)
+              .strokeStyle(colors[i]);
+          }
+          
+          areaVis.render();
+        }
+        
+        //renders a line graph
+        function renderLineGraph_Day(out, domains, colors, minTime, maxTime) {
+          var timeScale = TimeScale.DAY;
+          visits = new Array();
+          for(var i = 0; i < domains.length; i++) {
+            var domainFilter = {};
+            domainFilter = {"domain": domains[i]};
+            if(minTime && maxTime) {
+              domainFilter.minTime = minTime;
+              domainFilter.maxTime = maxTime;
+            }
+            var tempArray = getVisits(domainFilter);
+            var numVisits = numVisitsByTimePeriod(tempArray, timeScale, false);
+            visits.push(numVisits);
+          }
+          
+          var scale = 24 * 60 * 60 * 1000;
+          var maxVal = 0;
+          graphData = pv.range(domains.length).map(function(q) {
+            var numVisits = visits[q];
+            return pv.range(minTime, maxTime+1, scale).map(function(x) {
+              var d = new Date(x);
+              var num = numVisits[d];
+              if(!num) { num = 0; }
+              if(num > maxVal) { maxVal = num; }
+              return {x: d, y: num};
+            });
+          });
+          
+          /* Sizing and scales. */
+          var w = 800;
+          var h = 200;
+          var x = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w);
+          var y = pv.Scale.linear(0, maxVal * 1.1).range(0, h);
           
           // root panel
           var areaVis = new pv.Panel()

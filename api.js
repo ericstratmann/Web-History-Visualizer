@@ -113,6 +113,36 @@ function numVisitsByTime(visits, timeScale, relative, granularTimes) {
     return numVisits;
 }
 
+// numVisitsByTime returns all visits during 6:00 PM, whatever day it is
+// numVisitsByTimePeriod returns e.g. all visits from march 1 to march 10 by day
+function numVisitsByTimePeriod(visits, timeScale, granularTimes) {
+    granularTimes = false; //TODO not this, deal with it later
+
+    var numVisits = {};
+    for (var i in visits) {
+        if (!granularTimes) {
+            var d = new Date(visits[i].time);
+            if(timeScale == TimeScale.HOUR) {
+              d = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours());
+            }
+            else if(timeScale == TimeScale.DAY) {
+              d = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            }
+            else if(timeScale == TimeScale.MONTH) {
+              d = new Date(d.getFullYear(), d.getMonth());
+            }
+            else if(timeScale == TimeScale.YEAR) {
+              d = new Date(d.getFullYear());
+            }
+        } else {
+            var d = getGranularTime(new Date(visits[i].time), timeScale);
+        }
+        numVisits[d] = numVisits[d] || 0;
+        numVisits[d]++;
+    }
+    return numVisits;
+}
+
 
 // Returs a hash in the form of {"google.com", 5, "cnn.com": 3, ...}, showing
 // the number of visits to each domain

@@ -38,7 +38,8 @@ function renderDomainView(domain) {
 }
 
 //todo: date
-function renderCompareView(domains, minDate) {
+function renderCompareView(domains, minDate, scale) {
+    if(!scale) { scale = 0; }
     var colors = new Array();
     colors.push('#359');
     colors.push('#a59');
@@ -77,15 +78,23 @@ function renderCompareView(domains, minDate) {
     var htmlString = '<div class="chart_title" style="margin-top:20px">';
     htmlString += charttitle + ' ' + domainString + '<\/div>';
     htmlString += "<div>Add another domain: <input type=text name='add_domain' id='add_domain' /><input type=submit value='add' name='add' id='add_domain_button'/></div>";
+    htmlString += "<div>Switch Scales: <a href='javascript:void(0)' scale='0' class='scale_link'>24 Hours</a> | <a href='javascript:void(0)' scale='7' class='scale_link'>7 Days</a> | <a href='javascript:void(0)' scale='30' class='scale_link'>30 Days</a></div>";
     htmlString += "<div class='chart_heading'>Average Hourly Visits to these domains</div>";
-    htmlString += "<div id='chart'></div>";
+    htmlString += "<div id='chart' style='margin-left: 100px'></div>";
     htmlString += legend;
     htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + left + dateToStr(minDate) + right;
     htmlString += "</div><div id='pings'></div>";
 
     $("#results").html(htmlString);
 
-    renderLineGraph('chart', domains, colors, TimeScale.HOUR, true); //used to be stacked
+    if(!scale || scale == 0 || scale == 1) {
+      renderLineGraph_Hour('chart', domains, colors, true); //Todo: day vs hour
+    }
+    else {
+      var day_maxTime = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
+      var day_minTime = maxTime - 86400*1000*scale;
+      renderLineGraph_Day('chart', domains, colors, day_minTime, day_maxTime);
+    }
     renderPingsGraph('pings', minTime, maxTime, domains);
 
     $("#results").append("<br/>");
@@ -101,11 +110,16 @@ function renderCompareView(domains, minDate) {
     
     $("#add_domain_button").click(function() {
       domains.push($('#add_domain').val());
-      renderCompareView(domains, minDate);
+      renderCompareView(domains, minDate, scale);
+    });
+    
+    $(".scale_link").click(function() {
+      var s = $(this).attr('scale');
+      renderCompareView(domains, minDate, s);
     });
     
     $("#left").click(function() {
-        renderCompareView(domains, new Date(minDate.getTime() - 24 * 60 * 60 * 1000));
+        renderCompareView(domains, new Date(minDate.getTime() - 24 * 60 * 60 * 1000), scale);
     });
     
     $("#left").mouseover(function() {
@@ -125,7 +139,7 @@ function renderCompareView(domains, minDate) {
     });
 
     $("#right").click(function() {
-        renderCompareView(domains, new Date(minDate.getTime() + 24 * 60 * 60 * 1000));
+        renderCompareView(domains, new Date(minDate.getTime() + 24 * 60 * 60 * 1000), scale);
     });
 }
 
