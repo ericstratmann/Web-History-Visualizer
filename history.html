@@ -504,7 +504,7 @@
         
         //renders the timegraph
         function renderPingsGraph(out, minTime, maxTime, domains, visits) {
-           totalPings = new Array();
+          totalPings = new Array();
           if(!visits) {
             var range = maxTime - minTime;
             for(var i = 0; i < domains.length; i++) {
@@ -521,9 +521,9 @@
           else {
             for(var i = 0; i < visits.length; i++) {
               var domain = parseUri(visits[i].url).host;
-              if($.inArray(domain, domains)) {
+              //if($.inArray(domain, domains)) {
                totalPings.push(visits[i]);
-              }
+              //}
             }
           }
           
@@ -533,7 +533,11 @@
             var y = 10;
             var color = 1;
             for(var i = 0; i < domains.length; i++) {
-              if(totalPings[x].url.indexOf(domains[i]) >= 0) {
+              var host = parseUri(totalPings[x].url).host.replace(/www./i, "");
+              if(host == domains[i]) {
+                break;
+              }
+              else if('www.' + host == domains[i]) {
                 break;
               }
               else {
@@ -541,7 +545,9 @@
                 color += colorScale;
               }
             }
-            
+            if(y == (domains.length+1) * 10) {
+              y -= 10; //hack to make sure "all domains" works, we need to generalize this later though
+            }
             return {x: new Date(totalPings[x].time), y: y, z: 10, w: color};
           });
           

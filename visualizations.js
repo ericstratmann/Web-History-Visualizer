@@ -38,7 +38,7 @@ function renderDomainView(domain) {
 }
 
 //todo: date
-function renderCompareView(domains) {
+function renderCompareView(domains, minDate) {
     var colors = new Array();
     colors.push('#359');
     colors.push('#a59');
@@ -46,7 +46,9 @@ function renderCompareView(domains) {
     colors.push('#c64');
     colors.push('#bb4');
     var d = new Date();
-    var minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    if(!minDate) {
+      minDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    }
     var minTime = minDate.getTime();
     var maxTime = minTime + 86400*1000;
     
@@ -63,13 +65,12 @@ function renderCompareView(domains) {
     }
     legend += "</div>";
     
-    /*
+    
     var left = "<img class='arrow' id='left' src='left-green.png' alt='Back one day'/>";
     var right = "<img class='arrow' id='right' src='right-green.png' alt='Back one day'/>";
-    if (date.getTime() + 24 * 60 * 60 * 1000 > new Date().getTime()) {
+    if (minDate.getTime() + 24 * 60 * 60 * 1000 > new Date().getTime()) {
         right = "";
     }
-    */
 
     var charttitle = "Comparison of";
     if(domains.length <= 1) { charttitle = "Spotlight on"; }
@@ -79,7 +80,7 @@ function renderCompareView(domains) {
     htmlString += "<div class='chart_heading'>Average Hourly Visits to these domains</div>";
     htmlString += "<div id='chart'></div>";
     htmlString += legend;
-    htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + dateToStr(minDate);
+    htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + left + dateToStr(minDate) + right;
     htmlString += "</div><div id='pings'></div>";
 
     $("#results").html(htmlString);
@@ -99,16 +100,14 @@ function renderCompareView(domains) {
     outputVisits(allVisits);
     
     $("#add_domain_button").click(function() {
-      //alert($('#add_domain').val());
       domains.push($('#add_domain').val());
-      renderCompareView(domains);
+      renderCompareView(domains, minDate);
     });
     
-    /*
     $("#left").click(function() {
-        renderDateView(new Date(date.getTime() - 24 * 60 * 60 * 1000));
+        renderCompareView(domains, new Date(minDate.getTime() - 24 * 60 * 60 * 1000));
     });
-
+    
     $("#left").mouseover(function() {
         $("#left").attr("src", "left-blue.png");
     });
@@ -126,9 +125,8 @@ function renderCompareView(domains) {
     });
 
     $("#right").click(function() {
-        renderDateView(new Date(date.getTime() + 24 * 60 * 60 * 1000));
+        renderCompareView(domains, new Date(minDate.getTime() + 24 * 60 * 60 * 1000));
     });
-    */
 }
 
 function renderDateView(date, visits) {
