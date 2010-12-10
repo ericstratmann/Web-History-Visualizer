@@ -57,7 +57,7 @@ function renderDomainView(domain) {
     outputVisits(getVisits({domain: domain}));
 }
 
-function renderDateView(date) {
+function renderDateView(date, visits) {
     $("#results").html("");
     var left = "<img class='arrow' id='left' src='left-green.png' alt='Back one day'/>";
     var right = "<img class='arrow' id='right' src='right-green.png' alt='Back one day'/>";
@@ -69,13 +69,16 @@ function renderDateView(date) {
 
     $("#results").append("<div id='chart'></div>");
     $("#results").append("<div>Pages you visited on this day</div>");
-    var start = getDayMin(date);
-    var end = getDayMax(date);
-    var filter = {
-        minTime: start,
-        maxTime: end
+
+    if (!visits) {
+        var start = getDayMin(date);
+        var end = getDayMax(date);
+        var filter = {
+            minTime: start,
+            maxTime: end
+        }
+        visits = getVisits(filter);
     }
-    var visits = getVisits(filter);
     renderNumVisitsGraph(visits, 'chart', TimeScale.HOUR, true);
     outputVisits(visits);
 
