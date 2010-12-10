@@ -3,6 +3,10 @@ body {
   font-size: 12px;
   padding: 0px;
   margin: 0px;
+  /*
+  background-image: url('trex.jpg'); 
+  background-attachment: fixed;
+  */
 }
 
 a {
@@ -72,14 +76,18 @@ a:hover {
 }
 
 .header {
-  font-size: 24px;
-  font-weight: bold;
   margin-bottom: 10px;
 }
 
 .header_title {
-  float: left;
-  width: 500px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.header_subtitle {
+  font-size: 18px;
+  font-weight: bold;
 }
 
 #loading_gif {
