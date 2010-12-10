@@ -534,7 +534,7 @@
           /* Sizing and scales. */
           var w = 800;
           var h = 200;
-          var x = pv.Scale.linear(new Date(minTime), new Date(maxTime)).range(0, w);
+          var x = pv.Scale.linear(new Date(minTime), new Date(maxTime-scale+1)).range(0, w);
           var y = pv.Scale.linear(0, maxVal * 1.1).range(0, h);
           
           // root panel

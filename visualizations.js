@@ -83,7 +83,7 @@ function renderCompareView(domains, minDate, scale) {
     htmlString += " | <a href='javascript:void(0)' scale='30' class='scale_link'>30 Days</a>";
     htmlString += " | <a href='javascript:void(0)' scale='90' class='scale_link'>90 Days</a>";
     htmlString += " | <a href='javascript:void(0)' scale='365' class='scale_link'>365 Days</a></div>";
-    htmlString += "<div class='chart_heading'>Average Hourly Visits to these domains</div>";
+    htmlString += "<div class='chart_heading' id='line_graph_title'>Average Hourly Visits to these domains</div>";
     htmlString += "<div id='chart' style='margin-left: 100px'></div>";
     htmlString += legend;
     htmlString += "<div class='chart_heading' style='margin-top: 30px'>Visits for " + left + dateToStr(minDate) + right;
@@ -120,6 +120,9 @@ function renderCompareView(domains, minDate, scale) {
     $(".scale_link").click(function() {
       var s = $(this).attr('scale');
       renderCompareView(domains, minDate, s);
+      if(s > 1) {
+        $('#line_graph_title').html('Total Daily Visits to these domains');
+      }
     });
     
     $("#left").click(function() {
