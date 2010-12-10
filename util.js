@@ -45,7 +45,7 @@ function _outputVisits(visits) {
     sortBy(visits, "time");
     visits.reverse();
 
-    var MAX_VISITS  = 2000;
+    var MAX_VISITS  = 300;
     if (visits.length > MAX_VISITS) {
         visits = visits.slice(0, MAX_VISITS);
     }
