@@ -61,7 +61,12 @@ function renderDateView(date) {
     $("#results").html("");
     var left = "<img class='arrow' id='left' src='left-green.png' alt='Back one day'/>";
     var right = "<img class='arrow' id='right' src='right-green.png' alt='Back one day'/>";
+    if (date.getTime() + 24 * 60 * 60 * 1000 > new Date().getTime()) {
+        right = "";
+    }
     $("#results").append("<h2>Overview for " +  left + dateToStr(date) + right + "</h2>");
+
+
     $("#results").append("<div id='chart'></div>");
     $("#results").append("<div>Pages you visited on this day</div>");
     var start = getDayMin(date);
