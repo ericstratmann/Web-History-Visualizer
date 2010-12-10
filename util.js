@@ -47,7 +47,7 @@ function outputVisits(visits) {
         var outbound = "<a href='" + visit.url + "' target='_blank'><img src='http://bits.wikimedia.org/skins-1.5/vector/images/external-link-ltr-icon.png' /></a>";
         var html = timeStr + " - <a href='#' id='visit-" + id + "'>" + title + "</a>" + domain + " " + outbound + "<br/>";
 
-        if (!title) {
+        if (title) {
             allHtml += html;
             clickCallbacks.push(function() {
                 $("#date-" + id).click(function() {
