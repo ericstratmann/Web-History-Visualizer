@@ -152,7 +152,12 @@ function getHistory(callback, quick, text) {
         startTime: start,
         endTime: new Date().getTime()
     };
-    chrome.history.search(query, callback);
+    if (!chrome.history) {
+        $("#results").append("DINOSPHERE has encountered a known bug. Please use a Mac. Sorry!");
+        $("#results").append("If you are using a Mac, contact us");
+    } else {
+        chrome.history.search(query, callback);
+    }
 }
 
 // Returns the amount of time 'units' between the most and least recent
